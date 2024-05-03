@@ -1,0 +1,5 @@
+@import url('globals.css');
+@import url('reset.css');
+@import url('color-variables.css');
+
+@import url('./terminal/page.css');

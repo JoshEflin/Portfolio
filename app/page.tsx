@@ -1,7 +1,7 @@
-export default function Home() {
-  return (
-    <main >
+import { CommandLineInput } from "@/components/terminal/input";
 
-    </main>
-  );
+export default function Home() {
+    return (
+        <CommandLineInput />
+    );
 }

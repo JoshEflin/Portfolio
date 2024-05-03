@@ -1,0 +1,52 @@
+.command-line {
+    position: relative;
+    --background: var(--terminal-black);
+    --type-color: var(--terminal-type);
+    --font-family: var(--font-roboto-mono);
+    background: var(--background);
+    color: var(--type-color);
+    font-size: 20px;
+    font-family: var(--font-family);
+
+    #command-line-input {
+        border: none;
+        background: var(--background);
+        border: none;
+        /* Remove border */
+        background-color: transparent;
+        /* Make background transparent */
+        color: white;
+        /* Make text transparent */
+        caret-color: black;
+        /* Set caret color to black (cursor color) */
+        outline: none;
+
+        &:focus {
+            border: none;
+        }
+    }
+
+    #cursor {
+        padding: none;
+        margin-left: 1px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+        display: inline-block;
+        width: 1ch;
+        animation: blink 1s step-start infinite;
+    }
+}
+
+@keyframes blink {
+
+    from,
+    to {
+        background: var(--terminal-black);
+    }
+
+    50% {
+        background: var(--type-color);
+    }
+}
