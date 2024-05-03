@@ -37,6 +37,10 @@
         width: 1ch;
         animation: blink 1s step-start infinite;
     }
+
+    button {
+        display: none;
+    }
 }
 
 @keyframes blink {

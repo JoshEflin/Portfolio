@@ -1,9 +1,4 @@
-interface CursorProps {
-    position: number,
-    inputValue: string,
-}
-
-export const Cursor = ({ position, inputValue }: CursorProps) => {
+export const Cursor = ({ position }: { position: number }) => {
     const cursorStyle = {
         left: `calc(${position}ch )`,
     };
