@@ -1,4 +1,5 @@
 "use client";
 export default function GlobalError() {
-  return <h1> Error </h1>;
+    //BLUE SCREEN OF DEATH
+    return <h1> Error </h1>;
 }

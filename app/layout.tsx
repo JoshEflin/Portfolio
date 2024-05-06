@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "@/styles/app.css";
 
-
 const roboto_mono = Roboto_Mono({
     subsets: ['latin'],
     variable: '--font-roboto-mono',
@@ -23,17 +22,18 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${roboto_mono.variable}`}>
             <body className={inter.className}>
-                <header>
+                {/*<header>
                     <h1>
                         Josh Eflin
                     </h1>
+
                     <ul>
                         <li> Opera </li>
                         <li> Engineering </li>
                         <li> Blogging </li>
                         <li> Hire Me </li>
                     </ul>
-                </header>
+                </header>*/}
                 {children}
             </body>
 

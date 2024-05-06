@@ -1,5 +1,5 @@
-.command-line {
-    position: relative;
+.terminal {
+
     --background: var(--terminal-black);
     --type-color: var(--terminal-type);
     --font-family: var(--font-roboto-mono);
@@ -8,49 +8,53 @@
     font-size: 20px;
     font-family: var(--font-family);
 
-    #command-line-input {
-        border: none;
-        background: var(--background);
-        border: none;
-        /* Remove border */
-        background-color: transparent;
-        /* Make background transparent */
-        color: white;
-        /* Make text transparent */
-        caret-color: black;
-        /* Set caret color to black (cursor color) */
-        outline: none;
+    .command-line {
+        position: relative;
 
-        &:focus {
+        #command-line-input {
             border: none;
+            background: var(--background);
+            border: none;
+            /* Remove border */
+            background-color: transparent;
+            /* Make background transparent */
+            color: white;
+            /* Make text transparent */
+            caret-color: black;
+            /* Set caret color to black (cursor color) */
+            outline: none;
+
+            &:focus {
+                border: none;
+            }
+        }
+
+        #cursor {
+            position: absolute;
+            padding: none;
+            margin-left: 1px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            display: inline-block;
+            width: 1ch;
+            animation: blink 1s step-start infinite;
+        }
+
+        button {
+            display: none;
         }
     }
 
-    #cursor {
-        padding: none;
-        margin-left: 1px;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        color: white;
-        display: inline-block;
-        width: 1ch;
-        animation: blink 1s step-start infinite;
-    }
+    @keyframes blink {
 
-    button {
-        display: none;
-    }
-}
+        from,
+        to {
+            background: var(--terminal-black);
+        }
 
-@keyframes blink {
-
-    from,
-    to {
-        background: var(--terminal-black);
-    }
-
-    50% {
-        background: var(--type-color);
+        50% {
+            background: var(--type-color);
+        }
     }
 }

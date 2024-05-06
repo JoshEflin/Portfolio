@@ -1,16 +1,34 @@
 'use server'
-import { revalidatePath } from "next/cache"
 
-const commands = ['ls', 'cd', 'gui']
-export const commandParser = async (_, formData) => {
-    console.log(_, '\n underscore', formData, '\n formdata')
+interface CommandInput {
+    command: string;
+    prompt: string;
+    line: number;
+}
 
-    const newCommand = formData.get('command');
-    //
-    //TO DO Validate Input
-    //
+function generateNewPrompt(command: string, previousState: CommandInput) {
+    if (previousState.command === 'init') {
 
+        return {
+            prompt: "ASCIIArt()",
+            command: previousState.command,
+            line: previousState.line + 1
+        }
+    }
+    return {
+        command: command,
+        prompt: 'whoops',
+        line: previousState.line
+    }
+}
 
-    revalidatePath('/')
-    return { message: newCommand };
+export const commandParser = async (commandLineState: CommandInput, formData: FormData) => {
+    const { command, prompt, line } = commandLineState;
+    console.log('COMMAND:\n', command, 'PREFIX:\n', prompt, 'FORMDATA:\n', formData);
+
+    const newCommand = formData.get('command') as string;
+
+    console.log(newCommand)
+    const newformState = generateNewPrompt(newCommand, commandLineState)
+    return newformState;
 }
