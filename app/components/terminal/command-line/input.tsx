@@ -6,12 +6,10 @@ import { LinePrompt } from '@/components/terminal/command-line/prompt';
 import { PROMPT } from '@/constants/terminal';
 
 interface CommandLineState {
-    command: string;
     prompt: string;
-    line: number;
 }
 
-export const CommandLineInput = ({ command, prompt }: CommandLineState) => {
+export const CommandLineInput = ({ prompt }: CommandLineState) => {
     const [input, setInput] = useState('');
     const [cursorPosition, setCursorPosition] = useState<number>(0);
     const inputRef = useRef<HTMLInputElement>(null);

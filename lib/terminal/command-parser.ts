@@ -1,4 +1,7 @@
 'use server'
+import { Lexer } from "@/lib/services/lexer/lexer";
+import { Parser } from "@/lib/services/parser/parser";
+import { TokenTypes } from "../services/token/token";
 
 interface CommandInput {
     command: string;
@@ -10,25 +13,31 @@ function generateNewPrompt(command: string, previousState: CommandInput) {
     if (previousState.command === 'init') {
 
         return {
-            prompt: "ASCIIArt()",
-            command: previousState.command,
+            prompt: "newPrompt",
+            command: command,
             line: previousState.line + 1
         }
     }
     return {
-        command: command,
         prompt: 'whoops',
-        line: previousState.line
+        command: command,
+        line: previousState.line + 1
     }
 }
 
-export const commandParser = async (commandLineState: CommandInput, formData: FormData) => {
-    const { command, prompt, line } = commandLineState;
+export const formParser = async (commandLineState: CommandInput, formData: FormData) => {
+    const { command, prompt } = commandLineState;
     console.log('COMMAND:\n', command, 'PREFIX:\n', prompt, 'FORMDATA:\n', formData);
 
-    const newCommand = formData.get('command') as string;
+    const newInput = formData.get('command') as string;
 
-    console.log(newCommand)
-    const newformState = generateNewPrompt(newCommand, commandLineState)
+    const lexer = new Lexer(newInput);
+
+    const parser = new Parser(lexer);
+
+    const output = parser.parseTokens();
+    console.log(output, 'OUTPUT')
+
+    const newformState = generateNewPrompt(output, commandLineState)
     return newformState;
 }
