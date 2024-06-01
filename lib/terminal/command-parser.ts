@@ -1,33 +1,18 @@
 'use server'
 import { Lexer } from "@/lib/services/lexer/lexer";
 import { Parser } from "@/lib/services/parser/parser";
-import { TokenTypes } from "../services/token/token";
 
-interface CommandInput {
+export interface CommandInput {
     command: string;
-    prompt: string;
+    cwd: string;
     line: number;
 }
 
-function generateNewPrompt(command: string, previousState: CommandInput) {
-    if (previousState.command === 'init') {
-
-        return {
-            prompt: "newPrompt",
-            command: command,
-            line: previousState.line + 1
-        }
-    }
-    return {
-        prompt: 'whoops',
-        command: command,
-        line: previousState.line + 1
-    }
-}
-
-export const formParser = async (commandLineState: CommandInput, formData: FormData) => {
-    const { command, prompt } = commandLineState;
-    console.log('COMMAND:\n', command, 'PREFIX:\n', prompt, 'FORMDATA:\n', formData);
+//commandLineState is the current state and formData.get('command') tells us what the next state should be
+//the state is returned to the form so that we can create command history
+export const formParser = async (currentCommandLineState: CommandInput, formData: FormData) => {
+    const { command, cwd } = currentCommandLineState;
+    console.log('COMMAND:\n', command, 'PROMPT:\n', cwd, 'FORMDATA:\n', formData);
 
     const newInput = formData.get('command') as string;
 
@@ -35,9 +20,7 @@ export const formParser = async (commandLineState: CommandInput, formData: FormD
 
     const parser = new Parser(lexer);
 
-    const output = parser.parseTokens();
-    console.log(output, 'OUTPUT')
+    const newCommand = parser.parseTokens(currentCommandLineState, newInput);
 
-    const newformState = generateNewPrompt(output, commandLineState)
-    return newformState;
+    return newCommand;
 }

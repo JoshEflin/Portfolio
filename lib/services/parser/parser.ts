@@ -1,36 +1,11 @@
 import { Token, TokenTypes } from '@/lib/services/token/token'
 import { Lexer } from '@/lib/services/lexer/lexer'
+import { CommandInput } from '@/lib/terminal/command-parser'
 
-interface ParserInput {
-    type: TokenTypes
-    literal: string
+export interface CommandOutput extends CommandInput {
+    response: string | null;
+    prevDir: string;
 }
-
-export function arrayParser(tokenArray: ParserInput[]) {
-    tokenArray.map((token) => {
-
-        switch (token.type) {
-            case TokenTypes.LS:
-                console.log('LS tokenType');
-                break;
-            case TokenTypes.CD:
-                console.log('CD tokenType');
-                break;
-            case TokenTypes.CAT:
-                console.log('CAT tokenType');
-                break;
-            case TokenTypes.ARGUMENT:
-                console.log('ARGUMENT tokenType');
-                break;
-            case TokenTypes.READ:
-                console.log('READ tokenType');
-                break;
-            default:
-                console.log('not working');
-        }
-    })
-}
-
 export class Parser {
     current: Token;
     peek: Token;
@@ -44,84 +19,131 @@ export class Parser {
         this.peek = this.lexer.nextToken();
     }
 
-    parseTokens(): string {
-        let result = '';
+    parseTokens(previousState: CommandInput, newInput: string): CommandOutput {
+        let result: CommandOutput = {
+            prevDir: previousState.cwd,
+            cwd: previousState.cwd,
+            command: previousState.command,
+            response: 'something went wrong, please try again',
+            line: previousState.line + 1
+        }
+
         while (this.current.type !== TokenTypes.EOF) {
             switch (this.current.type) {
                 case TokenTypes.CD:
-                    result += this.parseCdCommand();
+                    result = this.parseCdCommand(previousState, newInput);
                     break;
                 case TokenTypes.LS:
-                    result += this.parseLsCommand();
+                    result = this.parseLsCommand(previousState);
                     break;
                 case TokenTypes.CAT:
-                    result += this.parseCatCommand();
+                    result = this.parseCatCommand(previousState);
                     break;
                 case TokenTypes.READ:
-                    result += this.parseReadCommand();
-                    break;
-                case TokenTypes.ARGUMENT:
-                    result += this.parseArgumentCommand();
+                    result = this.parseReadCommand(previousState);
                     break;
                 default:
-                    result += `${this.current.literal} not a valid input\n`;
+                    result = {
+                        cwd: previousState.cwd,
+                        prevDir: previousState.cwd,
+                        command: previousState.command,
+                        response: 'something went wrong, please try again',
+                        line: previousState.line + 1
+                    }
+
             }
             this.nextToken();
         }
-        return result || 'not working';
+        return result;
+
     }
 
-    parseCdCommand(): string {
+    parseCdCommand(previousState: CommandInput, newInput: string) {
         this.nextToken();
         if (this.current.type === TokenTypes.ARGUMENT) {
-            console.log(`changing directory to ${this.current.literal}`);
-            return `changing directory to ${this.current.literal}\n`;
+            return {
+                prevDir: previousState.cwd,
+                cwd: `/${this.current.literal}`,
+                response: `changing directory to ${this.current.literal}`,
+                command: newInput,
+                line: previousState.line + 1
+            }
         } else {
-            console.log(`Expected argument after cd command, got ${this.current.literal}`);
-            return `Expected argument after cd command, got ${this.current.literal}\n`;
+
+
+            return {
+                prevDir: previousState.cwd,
+                cwd: `${this.current.literal}`,
+                response: `Expected argument after cd command, got ${this.current.literal}`,
+                command: newInput,
+                line: previousState.line + 1
+            }
         }
     }
 
-    parseLsCommand(): string {
+    parseLsCommand(previousState: CommandInput): CommandOutput {
         this.nextToken();
         if (this.current.type === TokenTypes.ARGUMENT) {
-            console.log(`did not expect argument after ls command, got ${this.current.literal}`);
-            return `Did not expect argument after ls command, got ${this.current.literal}\n`;
+            return {
+                prevDir: previousState.cwd,
+                cwd: previousState.cwd,
+                command: previousState.command,
+                response: 'engineering\nopera\nresume\nblog\nabout',
+                line: previousState.line + 1
+            }
+
         } else {
-            return 'Opera\nEngineering\nContact\nResume\n';
+            return {
+                prevDir: previousState.cwd,
+                cwd: previousState.cwd,
+                command: previousState.command,
+                response: 'engineering\nopera\nresume\nblog\nabout',
+                line: previousState.line + 1
+            }
         }
     }
 
-    parseCatCommand(): string {
+    parseCatCommand(previousState: CommandInput): CommandOutput {
         this.nextToken();
         if (this.current.type === TokenTypes.ARGUMENT) {
-            console.log('handle cat function');
-            return 'handle cat function\n';
+            return {
+                prevDir: previousState.cwd,
+                cwd: previousState.cwd,
+                command: previousState.command,
+                response: 'handle Cat function',
+                line: previousState.line + 1
+            }
         } else {
             console.log(`Expected argument after cat command, got ${this.current.literal}`);
-            return `Expected argument after cat command, got ${this.current.literal}\n`;
+            return {
+                prevDir: previousState.cwd,
+                cwd: previousState.cwd,
+                command: previousState.command,
+                response: 'handle Cat function',
+                line: previousState.line + 1
+            }
         }
     }
 
-    parseReadCommand(): string {
+    parseReadCommand(previousState: CommandInput): CommandOutput {
         this.nextToken();
         if (this.current.type === TokenTypes.ARGUMENT) {
-            console.log('handle read function');
-            return 'handle read function\n';
+            return {
+                prevDir: previousState.cwd,
+                cwd: previousState.cwd,
+                command: previousState.command,
+                response: 'handle read function',
+                line: previousState.line + 1
+            }
         } else {
             console.log(`Expected argument after read command, got ${this.current.literal}`);
-            return `Expected argument after read command, got ${this.current.literal}\n`;
-        }
-    }
-
-    parseArgumentCommand(): string {
-        this.nextToken();
-        if (this.current.type === TokenTypes.ARGUMENT) {
-            console.log('handle argument function');
-            return 'handle argument function\n';
-        } else {
-            console.log(`Expected argument after argument command, got ${this.current.literal}`);
-            return `Expected argument after argument command, got ${this.current.literal}\n`;
+            return {
+                prevDir: previousState.cwd,
+                cwd: previousState.cwd,
+                command: previousState.command,
+                response: 'handle read function',
+                line: previousState.line + 1
+            }
         }
     }
 }

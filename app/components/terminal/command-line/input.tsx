@@ -3,24 +3,26 @@
 import { ChangeEvent, useState, useRef, useEffect } from 'react';
 import { Cursor } from '@/components/terminal/command-line/cursor';
 import { LinePrompt } from '@/components/terminal/command-line/prompt';
-import { PROMPT } from '@/constants/terminal';
+import { prompt } from '@/constants/terminal';
 
 interface CommandLineState {
-    prompt: string;
+    cwd: string;
+    line: number
 }
 
-export const CommandLineInput = ({ prompt }: CommandLineState) => {
+export const CommandLineInput = ({ cwd, line }: CommandLineState) => {
+    console.log(cwd)
     const [input, setInput] = useState('');
     const [cursorPosition, setCursorPosition] = useState<number>(0);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const linePrompt = prompt || PROMPT;
+    const linePrompt = cwd ? prompt(`${cwd}`) : prompt('/');
     const calculateCursorPosition = linePrompt.length + cursorPosition;
 
     useEffect(() => {
         setInput('');
         setCursorPosition(0);
-    }, [prompt]);
+    }, [line]);
 
     useEffect(() => {
         if (inputRef.current) {

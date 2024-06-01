@@ -1,10 +1,11 @@
-
 // initial command line state
-export const PROMPT = "guest@josheflin.com:~/$";
+export const prompt = (cwd: string) => `guest@josheflin.com:~${cwd}$`;
 export const WELCOME = {
+    prevDir: '/',
     command: "init",
-    prompt: PROMPT,
-    line: 0
+    cwd: '/',
+    line: 0,
+    response: ''
 };
 
 
