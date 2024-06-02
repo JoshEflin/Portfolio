@@ -1,3 +1,6 @@
+# Acknowledgements
+  some of the back end logic (specifically the command parser is heavily influenced by the interpretter created in the book "Writing an Interpreter in Go" by Thorsten Ball
+  it is however obviously not written in Go but the structure of the lexer and parser are very similar as I came up with the idea of making a REPL portfolio while reading the book
 # User experience- WIP
 
 When I land on the page I am greeting with a blinking terminal prompting a login
