@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "@/styles/app.css";
+import { Terminal } from "./components/terminal/Terminal";
 
 const roboto_mono = Roboto_Mono({
     subsets: ['latin'],
@@ -35,6 +36,9 @@ export default function RootLayout({
                     </ul>
                 </header>*/}
                 {children}
+                <footer>
+                    <Terminal />
+                </footer>
             </body>
 
         </html >
