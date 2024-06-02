@@ -3,26 +3,40 @@
     --background: var(--terminal-black);
     --type-color: var(--terminal-type);
     --font-family: var(--font-roboto-mono);
+
     background: var(--background);
     color: var(--type-color);
     font-size: 20px;
     font-family: var(--font-family);
 
+    .input-domain {
+        color: var(--domain-type);
+
+        .input-dir {
+            color: var(--dir-type);
+        }
+    }
+
     .command-line {
         position: relative;
 
+        .input-domain {
+            color: var(--domain-type);
+
+            .input-dir {
+                color: var(--dir-type);
+            }
+        }
+
         #command-line-input {
             border: none;
-            background: var(--background);
-            border: none;
-            /* Remove border */
-            background-color: transparent;
-            /* Make background transparent */
-            color: white;
-            /* Make text transparent */
-            caret-color: black;
-            /* Set caret color to black (cursor color) */
             outline: none;
+            background: var(--background);
+
+            background-color: transparent;
+            color: var(--dir-type);
+            /* Set default caret color to black so that its invisible (cursor color) */
+            caret-color: var(--background);
 
             &:focus {
                 border: none;
@@ -35,7 +49,7 @@
             margin-left: 1px;
             top: 50%;
             transform: translateY(-50%);
-            color: white;
+            color: var(--dir-type);
             display: inline-block;
             width: 1ch;
             animation: blink 1s step-start infinite;
@@ -54,7 +68,7 @@
         }
 
         50% {
-            background: var(--type-color);
+            background: var(--dir-type);
         }
     }
 }

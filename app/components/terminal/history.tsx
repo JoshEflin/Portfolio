@@ -1,7 +1,10 @@
-import { prompt } from "@/constants/terminal"
+import { Response, LinePrompt } from "@/components/terminal/command-line/prompt";
+import { Instructions } from '@/components/terminal/instructions';
+
 interface Props {
     history: History[]
 }
+
 interface History {
     prevDir: string;
     command: string
@@ -18,15 +21,14 @@ export const History = ({ history }: Props) => {
         return <div>{history[0].response}</div>
     } else if (history[0].command === 'init') {
 
-        return <div> instructions </div>
+        return <Instructions />
     } else {
         return history.map(({ prevDir, command, cwd, line, response }: History) => {
 
             return (
                 <div key={line}>
-                    <div>{prompt(prevDir)}</div>
-                    <div>{response}</div>
-                    <br />
+                    <LinePrompt cwd={prevDir} />
+                    <Response response={response} />
                 </div>)
         })
     }

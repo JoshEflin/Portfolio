@@ -28,20 +28,19 @@ export const CommandLineInput = ({ cwd, line }: CommandLineState) => {
         if (inputRef.current) {
             inputRef.current.style.width = `${Math.max(1, input.length + 1)}ch`;
         }
-
     }, [input]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { value, selectionStart } = e.target;
         setInput(value);
-        setCursorPosition(selectionStart!);  // No need to adjust position by +1
+        setCursorPosition(selectionStart!);
     };
 
     return (
         <label
             className="command-line"
         >
-            <LinePrompt cwd={linePrompt} />
+            <LinePrompt cwd={cwd} />
             <input
                 ref={inputRef}
                 id="command-line-input"
