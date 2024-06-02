@@ -1,1 +1,0 @@
-export const ASCII = () => <div> ASCII ART</div>

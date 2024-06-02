@@ -1,6 +1,7 @@
 import { Token, TokenTypes } from '@/lib/services/token/token'
 import { Lexer } from '@/lib/services/lexer/lexer'
 import { CommandInput } from '@/lib/terminal/command-parser'
+import { redirect } from 'next/navigation';
 
 export interface CommandOutput extends CommandInput {
     response: string | null;
@@ -20,34 +21,42 @@ export class Parser {
     }
 
     parseTokens(previousState: CommandInput, newInput: string): CommandOutput {
+        console.log(previousState, 'previous state', newInput, 'new input')
         let result: CommandOutput = {
             prevDir: previousState.cwd,
             cwd: previousState.cwd,
             command: previousState.command,
-            response: 'something went wrong, please try again',
+            response: 'if you are seeing this, I have made a grave error. BEWARE',
             line: previousState.line + 1
         }
 
         while (this.current.type !== TokenTypes.EOF) {
+            console.log('type', this.current.type);
             switch (this.current.type) {
                 case TokenTypes.CD:
                     result = this.parseCdCommand(previousState, newInput);
                     break;
                 case TokenTypes.LS:
-                    result = this.parseLsCommand(previousState);
+                    result = this.parseLsCommand(previousState, newInput);
                     break;
                 case TokenTypes.CAT:
-                    result = this.parseCatCommand(previousState);
+                    result = this.parseCatCommand(previousState, newInput);
                     break;
                 case TokenTypes.READ:
-                    result = this.parseReadCommand(previousState);
+                    result = this.parseReadCommand(previousState, newInput);
+                    break;
+                case TokenTypes.ARGUMENT:
+                    result = this.parseArgumentCommand(previousState, newInput);
+                    break;
+                case TokenTypes.HELP:
+                    result = this.getHelp(previousState, newInput);
                     break;
                 default:
                     result = {
                         cwd: previousState.cwd,
                         prevDir: previousState.cwd,
                         command: previousState.command,
-                        response: 'something went wrong, please try again',
+                        response: `the command '${this.current.literal}' doesn't warrant a response`,
                         line: previousState.line + 1
                     }
 
@@ -70,7 +79,6 @@ export class Parser {
             }
         } else {
 
-
             return {
                 prevDir: previousState.cwd,
                 cwd: `${this.current.literal}`,
@@ -81,35 +89,31 @@ export class Parser {
         }
     }
 
-    parseLsCommand(previousState: CommandInput): CommandOutput {
-        this.nextToken();
-        if (this.current.type === TokenTypes.ARGUMENT) {
-            return {
-                prevDir: previousState.cwd,
-                cwd: previousState.cwd,
-                command: previousState.command,
-                response: 'engineering\nopera\nresume\nblog\nabout',
-                line: previousState.line + 1
-            }
-
-        } else {
-            return {
-                prevDir: previousState.cwd,
-                cwd: previousState.cwd,
-                command: previousState.command,
-                response: 'engineering\nopera\nresume\nblog\nabout',
-                line: previousState.line + 1
-            }
+    parseLsCommand(previousState: CommandInput, newInput: string): CommandOutput {
+        console.log({
+            prevDir: previousState.cwd,
+            cwd: previousState.cwd,
+            command: newInput,
+            response: 'engineering\nopera\nresume\nblog\nabout',
+            line: previousState.line + 1
+        }
+        )
+        return {
+            prevDir: previousState.cwd,
+            cwd: previousState.cwd,
+            command: newInput,
+            response: 'engineering\nopera\nresume\nblog\nabout',
+            line: previousState.line + 1
         }
     }
 
-    parseCatCommand(previousState: CommandInput): CommandOutput {
+    parseCatCommand(previousState: CommandInput, newInput: string): CommandOutput {
         this.nextToken();
         if (this.current.type === TokenTypes.ARGUMENT) {
             return {
                 prevDir: previousState.cwd,
                 cwd: previousState.cwd,
-                command: previousState.command,
+                command: newInput,
                 response: 'handle Cat function',
                 line: previousState.line + 1
             }
@@ -125,13 +129,13 @@ export class Parser {
         }
     }
 
-    parseReadCommand(previousState: CommandInput): CommandOutput {
+    parseReadCommand(previousState: CommandInput, newInput: string): CommandOutput {
         this.nextToken();
         if (this.current.type === TokenTypes.ARGUMENT) {
             return {
                 prevDir: previousState.cwd,
                 cwd: previousState.cwd,
-                command: previousState.command,
+                command: newInput,
                 response: 'handle read function',
                 line: previousState.line + 1
             }
@@ -144,6 +148,27 @@ export class Parser {
                 response: 'handle read function',
                 line: previousState.line + 1
             }
+        }
+    }
+
+    parseArgumentCommand(previousState: CommandInput, newInput: string) {
+        this.nextToken();
+        return {
+            prevDir: previousState.cwd,
+            cwd: previousState.cwd,
+            response: `${newInput} is not a valid command...seek help immediately`,
+            command: newInput,
+            line: previousState.line + 1
+        }
+    }
+    getHelp(previousState: CommandInput, newInput: string) {
+        return {
+
+            prevDir: previousState.cwd,
+            cwd: previousState.cwd,
+            response: `google it`,
+            command: newInput,
+            line: previousState.line + 1
         }
     }
 }

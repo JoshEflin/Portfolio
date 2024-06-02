@@ -5,9 +5,11 @@ import { formParser } from '@/lib/terminal/command-parser';
 import { CommandLineInput } from '@/components/terminal/command-line/input';
 import { WELCOME } from '@/constants/terminal';
 import { History } from '@/components/terminal/history';
+import { useRouter } from 'next/navigation';
 
 export function Terminal() {
-    //need to include previous cwd for history as well
+    console.log('hi')
+    const router = useRouter();
     const [{ command, cwd, line, response, prevDir }, formAction] = useFormState(formParser, WELCOME);
     const [history, setHistory] = useState([{ command, cwd, line, response, prevDir }])
 
@@ -19,6 +21,10 @@ export function Terminal() {
         });
     }, [line, command, response, cwd, prevDir]);
 
+    useEffect(() => {
+        console.log(cwd)
+        router.push(cwd)
+    }, [router, cwd])
     return (
         <div className='terminal'>
             <History history={history} />

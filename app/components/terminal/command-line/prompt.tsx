@@ -1,14 +1,16 @@
-export const LinePrompt = ({ cwd }: { cwd: string }) => {
-
-    return (
-        <span className="input-domain">
-            guest@josheflin.com:
-            <span className="input-dir">
-                {`~${cwd}$`}
-            </span>
+export const LinePrompt = ({ cwd }: { cwd: string }) => (
+    <span className="input-domain">
+        guest@josheflin.com:
+        <span className="input-dir">
+            {`~${cwd}$`}
         </span>
-    );
-}
-export const Response = ({ response }: { response: string | null }) => {
-    return <div className="response">{response}</div>;
-}
+    </span>
+);
+
+export const Response = ({ response }: { response: string | null }) => (
+    <div className="response">{response}</div>
+)
+
+export const PreviousCommand = ({ command }: { command: string | null }) => (
+    <span className="previous-command" > {command}</span>
+)

@@ -9,11 +9,19 @@
     font-size: 20px;
     font-family: var(--font-family);
 
-    .input-domain {
-        color: var(--domain-type);
 
-        .input-dir {
-            color: var(--dir-type);
+    .history {
+        .previous-command {
+            color: pink
+        }
+
+        .input-domain {
+            color: var(--domain-type);
+
+            .input-dir {
+                color: var(--dir-type);
+            }
+
         }
     }
 

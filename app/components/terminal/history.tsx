@@ -1,4 +1,4 @@
-import { Response, LinePrompt } from "@/components/terminal/command-line/prompt";
+import { Response, LinePrompt, PreviousCommand } from "@/components/terminal/command-line/prompt";
 import { Instructions } from '@/components/terminal/instructions';
 
 interface Props {
@@ -14,7 +14,6 @@ interface History {
 }
 
 export const History = ({ history }: Props) => {
-    console.log(history)
     if (history[1] && history[0].command === 'init') {
         history.shift()
 
@@ -26,8 +25,9 @@ export const History = ({ history }: Props) => {
         return history.map(({ prevDir, command, cwd, line, response }: History) => {
 
             return (
-                <div key={line}>
+                <div className="history" key={line}>
                     <LinePrompt cwd={prevDir} />
+                    <PreviousCommand command={command} />
                     <Response response={response} />
                 </div>)
         })

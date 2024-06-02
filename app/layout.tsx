@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "@/styles/app.css";
-import { Terminal } from "./components/terminal/Terminal";
+import { ASCIIPortrait } from "./components/ASCII/portrait";
+import { ASCIIName } from "./components/ASCII/name";
 
 const roboto_mono = Roboto_Mono({
     subsets: ['latin'],
@@ -16,28 +17,29 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
+    terminal,
     children,
 }: Readonly<{
     children: React.ReactNode;
+    terminal: React.ReactNode;
+    dev: React.ReactNode;
 }>) {
     return (
         <html lang="en" className={`${roboto_mono.variable}`}>
             <body className={inter.className}>
-                {/*<header>
-                    <h1>
-                        Josh Eflin
-                    </h1>
-
-                    <ul>
-                        <li> Opera </li>
-                        <li> Engineering </li>
-                        <li> Blogging </li>
-                        <li> Hire Me </li>
-                    </ul>
-                </header>*/}
+                <header>
+                    <div className="ascii-art">
+                        <ASCIIPortrait />
+                    </div>
+                    <div className="ascii-art">
+                        <ASCIIName />
+                    </div>
+                </header>
                 {children}
+                <main>
+                </main>
                 <footer>
-                    <Terminal />
+                    {terminal}
                 </footer>
             </body>
 

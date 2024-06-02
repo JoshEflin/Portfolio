@@ -11,7 +11,6 @@ interface CommandLineState {
 }
 
 export const CommandLineInput = ({ cwd, line }: CommandLineState) => {
-    console.log(cwd)
     const [input, setInput] = useState('');
     const [cursorPosition, setCursorPosition] = useState<number>(0);
     const inputRef = useRef<HTMLInputElement>(null);
