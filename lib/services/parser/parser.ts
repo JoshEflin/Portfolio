@@ -2,6 +2,7 @@ import { Token, TokenTypes } from '@/lib/services/token/token'
 import { Lexer } from '@/lib/services/lexer/lexer'
 import { CommandInput } from '@/lib/terminal/command-parser'
 import { redirect } from 'next/navigation';
+import { DIRECTORIES } from '@/constants/terminal';
 
 export interface CommandOutput extends CommandInput {
     response: string | null;
@@ -21,7 +22,6 @@ export class Parser {
     }
 
     parseTokens(previousState: CommandInput, newInput: string): CommandOutput {
-        console.log(previousState, 'previous state', newInput, 'new input')
         let result: CommandOutput = {
             prevDir: previousState.cwd,
             cwd: previousState.cwd,
@@ -59,17 +59,37 @@ export class Parser {
                         response: `the command '${this.current.literal}' doesn't warrant a response`,
                         line: previousState.line + 1
                     }
-
             }
             this.nextToken();
         }
-        return result;
 
+        return result;
     }
 
     parseCdCommand(previousState: CommandInput, newInput: string) {
         this.nextToken();
-        if (this.current.type === TokenTypes.ARGUMENT) {
+
+        if (this.current.type === TokenTypes.EOF || this.current.type === TokenTypes.SLASH) {
+            return {
+                prevDir: previousState.cwd,
+                cwd: `/`,
+                response: ``,
+                command: newInput,
+                line: previousState.line + 1
+            }
+
+        } else if (!DIRECTORIES.has(this.current.literal)) {
+            return {
+
+                prevDir: previousState.cwd,
+                cwd: previousState.cwd,
+                response: `Expected a legal dir name after cd command, got ${this.current.literal}`,
+                command: newInput,
+                line: previousState.line + 1
+            }
+
+        } else if (this.current.type === TokenTypes.ARGUMENT && DIRECTORIES.has(this.current.literal)) {
+
             return {
                 prevDir: previousState.cwd,
                 cwd: `/${this.current.literal}`,
@@ -77,53 +97,45 @@ export class Parser {
                 command: newInput,
                 line: previousState.line + 1
             }
-        } else {
-
-            return {
-                prevDir: previousState.cwd,
-                cwd: `${this.current.literal}`,
-                response: `Expected argument after cd command, got ${this.current.literal}`,
-                command: newInput,
-                line: previousState.line + 1
-            }
         }
     }
 
     parseLsCommand(previousState: CommandInput, newInput: string): CommandOutput {
-        console.log({
-            prevDir: previousState.cwd,
-            cwd: previousState.cwd,
-            command: newInput,
-            response: 'engineering\nopera\nresume\nblog\nabout',
-            line: previousState.line + 1
-        }
-        )
         return {
             prevDir: previousState.cwd,
             cwd: previousState.cwd,
             command: newInput,
-            response: 'engineering\nopera\nresume\nblog\nabout',
+            response: Array.from(DIRECTORIES.keys()).join(' '),
             line: previousState.line + 1
         }
     }
 
     parseCatCommand(previousState: CommandInput, newInput: string): CommandOutput {
-        this.nextToken();
-        if (this.current.type === TokenTypes.ARGUMENT) {
+        if (previousState.command === 'cat') {
             return {
                 prevDir: previousState.cwd,
                 cwd: previousState.cwd,
                 command: newInput,
-                response: 'handle Cat function',
+                response: `
+     /\\_/\\  
+    / o o \\ 
+   (   "   ) 
+    \\~(*)~/ 
+     \\~_~/  
+ooops... this appears to be a bat
+`,
                 line: previousState.line + 1
             }
-        } else {
-            console.log(`Expected argument after cat command, got ${this.current.literal}`);
+        }
+        else {
             return {
                 prevDir: previousState.cwd,
                 cwd: previousState.cwd,
-                command: previousState.command,
-                response: 'handle Cat function',
+                command: newInput,
+                response: `
+     /\\_/\\  
+    ( o.o ) 
+     > ^ < `,
                 line: previousState.line + 1
             }
         }
@@ -166,7 +178,7 @@ export class Parser {
 
             prevDir: previousState.cwd,
             cwd: previousState.cwd,
-            response: `google it`,
+            response: `Type 'ls' to view a list of navigable pages. Type 'cd' then the page name to navigate to the page. Type cat for a cat photo`,
             command: newInput,
             line: previousState.line + 1
         }

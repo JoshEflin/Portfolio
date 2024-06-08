@@ -13,10 +13,10 @@ export const WELCOME = {
 export const RESUME = 'resume';
 export const CONTACT = 'contact';
 export const OPERA = 'opera';
-export const ENGERINEERING = 'engineering';
+export const DEV = 'dev';
 
 export const DIRECTORIES = new Map();
 DIRECTORIES.set(RESUME, 'resume');
 DIRECTORIES.set(CONTACT, 'contact');
 DIRECTORIES.set(OPERA, 'opera');
-DIRECTORIES.set(ENGERINEERING, 'engineering');
+DIRECTORIES.set(DEV, 'dev');

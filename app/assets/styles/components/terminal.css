@@ -9,6 +9,9 @@
     font-size: 20px;
     font-family: var(--font-family);
 
+    pre {
+        display: inline;
+    }
 
     .history {
         .previous-command {
@@ -21,6 +24,7 @@
             .input-dir {
                 color: var(--dir-type);
             }
+
 
         }
     }

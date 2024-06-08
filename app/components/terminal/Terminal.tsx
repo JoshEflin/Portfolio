@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { formParser } from '@/lib/terminal/command-parser';
 import { CommandLineInput } from '@/components/terminal/command-line/input';
 import { WELCOME } from '@/constants/terminal';
-import { History } from '@/components/terminal/history';
+import { HistoryManager } from '@/components/terminal/history';
 import { useRouter } from 'next/navigation';
 
 export function Terminal() {
@@ -28,7 +28,7 @@ export function Terminal() {
     }, [router, cwd])
     return (
         <div className='terminal'>
-            <History history={history} />
+            <HistoryManager history={history} />
             <form
                 name="command-line"
                 action={formAction}

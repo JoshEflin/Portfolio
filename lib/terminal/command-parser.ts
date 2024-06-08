@@ -12,14 +12,9 @@ export interface CommandInput {
 //the state is returned to the form so that we can create command history
 export const formParser = async (currentCommandLineState: CommandInput, formData: FormData) => {
     const { command, cwd } = currentCommandLineState;
-    console.log('COMMAND:\n', command, 'PROMPT:\n', cwd, 'FORMDATA:\n', formData);
-
     const newInput = formData.get('command') as string;
-
     const lexer = new Lexer(newInput);
-
     const parser = new Parser(lexer);
-
     const newCommand = parser.parseTokens(currentCommandLineState, newInput);
 
     return newCommand;

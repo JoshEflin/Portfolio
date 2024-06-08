@@ -8,28 +8,38 @@ interface Props {
 interface History {
     prevDir: string;
     command: string
-    cwd: string
-    line: number
+    cwd?: string
+    line?: number
     response: string | null
 }
 
-export const History = ({ history }: Props) => {
+const getTrimmedHistory = (history: History[]) => {
     if (history[1] && history[0].command === 'init') {
-        history.shift()
+        return history.slice(1);
+    }
+    return history;
+};
 
-        return <div>{history[0].response}</div>
-    } else if (history[0].command === 'init') {
+const History: React.FC<History> = ({ response, prevDir, command }) => (
+    <div className="history" >
+        <LinePrompt cwd={prevDir} />
+        <PreviousCommand command={command} />
+        <Response response={response} prev={command} />
+    </div>);
 
+export const HistoryManager: React.FC<Props> = ({ history }) => {
+    const trimmedHistory = getTrimmedHistory(history);
+
+    if (trimmedHistory[0].command === 'init') {
         return <Instructions />
     } else {
-        return history.map(({ prevDir, command, cwd, line, response }: History) => {
-
-            return (
-                <div className="history" key={line}>
-                    <LinePrompt cwd={prevDir} />
-                    <PreviousCommand command={command} />
-                    <Response response={response} />
-                </div>)
-        })
+        return trimmedHistory.map(({ prevDir, command, line, response }) => (
+            <History
+                key={line}
+                response={response}
+                prevDir={prevDir}
+                command={command}
+            />
+        ))
     }
 }
