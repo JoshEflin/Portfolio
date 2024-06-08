@@ -1,5 +1,4 @@
 .terminal {
-
     --background: var(--terminal-black);
     --type-color: var(--terminal-type);
     --font-family: var(--font-roboto-mono);
@@ -9,13 +8,18 @@
     font-size: 20px;
     font-family: var(--font-family);
 
+    position: sticky;
+    bottom: 0;
+    left: 5;
+    overflow-y: auto;
+
     pre {
         display: inline;
     }
 
     .history {
         .previous-command {
-            color: pink
+            color: pink;
         }
 
         .input-domain {
@@ -24,8 +28,6 @@
             .input-dir {
                 color: var(--dir-type);
             }
-
-
         }
     }
 
@@ -61,7 +63,7 @@
             margin-left: 1px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--dir-type);
+            color: transparent;
             display: inline-block;
             width: 1ch;
             animation: blink 1s step-start infinite;
@@ -76,11 +78,12 @@
 
         from,
         to {
-            background: var(--terminal-black);
+            background: transparent;
         }
 
         50% {
             background: var(--dir-type);
         }
     }
+
 }

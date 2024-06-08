@@ -1,5 +1,4 @@
 import { Response, LinePrompt, PreviousCommand } from "@/components/terminal/command-line/prompt";
-import { Instructions } from '@/components/terminal/instructions';
 
 interface Props {
     history: History[]
@@ -31,7 +30,7 @@ export const HistoryManager: React.FC<Props> = ({ history }) => {
     const trimmedHistory = getTrimmedHistory(history);
 
     if (trimmedHistory[0].command === 'init') {
-        return <Instructions />
+        return null;
     } else {
         return trimmedHistory.map(({ prevDir, command, line, response }) => (
             <History

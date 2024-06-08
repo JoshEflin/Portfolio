@@ -1,1 +1,10 @@
+:root {
+    --background: var(--terminal-black);
+    --type-color: var(--terminal-type);
+    --font-family: var(--font-roboto-mono);
 
+    background: var(--background);
+    color: var(--type-color);
+    font-size: 20px;
+    font-family: var(--font-family);
+}

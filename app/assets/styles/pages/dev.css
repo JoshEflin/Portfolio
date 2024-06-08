@@ -1,4 +1,4 @@
 .dev {
-    background-color: pink;
-    color: blue;
+    background-color: var(--terminal-black);
+    color: var(--domain-type);
 }

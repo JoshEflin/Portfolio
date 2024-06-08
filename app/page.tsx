@@ -1,4 +1,5 @@
+import { Instructions } from "./components/terminal/instructions"
 export default function Page() {
-    return <div> WELCOME </div>
+    return <Instructions />
 }
 
