@@ -1,0 +1,9 @@
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 35vh;
+    max-height: 35vh;
+    overflow-y: auto;
+}

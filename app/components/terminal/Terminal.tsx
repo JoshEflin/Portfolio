@@ -1,6 +1,6 @@
 'use client';
 import { useFormState } from 'react-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { formParser } from '@/lib/terminal/command-parser';
 import { CommandLineInput } from '@/components/terminal/command-line/input';
 import { WELCOME } from '@/constants/terminal';
@@ -11,6 +11,7 @@ export function Terminal() {
     const router = useRouter();
     const [{ command, cwd, line, response, prevDir }, formAction] = useFormState(formParser, WELCOME);
     const [history, setHistory] = useState([{ command, cwd, line, response, prevDir }])
+    const terminalRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setHistory((previousHistory) => {
@@ -26,8 +27,16 @@ export function Terminal() {
         // Consider other strategies for persisting terminal state such as context
         router.push(cwd)
     }, [router, cwd])
+
+    useEffect(() => {
+
+        if (terminalRef.current) {
+            terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+        }
+    }, [history])
+
     return (
-        <div className='terminal'>
+        <div className='terminal' ref={terminalRef}>
             <HistoryManager history={history} />
             <form
                 name="command-line"

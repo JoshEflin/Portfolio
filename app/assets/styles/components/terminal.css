@@ -3,6 +3,7 @@
     --type-color: var(--terminal-type);
     --font-family: var(--font-roboto-mono);
 
+    height: 100%;
     background: var(--background);
     color: var(--type-color);
     font-size: 20px;
@@ -12,6 +13,7 @@
     bottom: 0;
     left: 5;
     overflow-y: auto;
+    border-top: 3px solid var(--type-color);
 
     pre {
         display: inline;

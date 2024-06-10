@@ -22,7 +22,6 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
     terminal: React.ReactNode;
-    dev: React.ReactNode;
 }>) {
     return (
         <html lang="en" className={`${roboto_mono.variable}`}>
