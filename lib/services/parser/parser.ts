@@ -22,6 +22,8 @@ export class Parser {
     }
 
     parseTokens(previousState: CommandInput, newInput: string): CommandOutput {
+        const inputs = [];
+        inputs.push(newInput)
         let result: CommandOutput = {
             prevDir: previousState.cwd,
             cwd: previousState.cwd,
@@ -30,8 +32,10 @@ export class Parser {
             line: previousState.line + 1
         }
 
+        //TODO Need to handle typos
         while (this.current.type !== TokenTypes.EOF) {
             console.log('type', this.current.type);
+
             switch (this.current.type) {
                 case TokenTypes.CD:
                     result = this.parseCdCommand(previousState, newInput);
@@ -51,18 +55,22 @@ export class Parser {
                 case TokenTypes.HELP:
                     result = this.getHelp(previousState, newInput);
                     break;
+                case TokenTypes.INT:
+                    result = this.handleInt(previousState, newInput);
+
                 default:
                     result = {
                         cwd: previousState.cwd,
                         prevDir: previousState.cwd,
-                        command: previousState.command,
-                        response: `the command '${this.current.literal}' doesn't warrant a response`,
+                        command: newInput,
+                        response: `looks like SOMEONE made a booboo, press help to see a list of valid commands.. for Pete's sake. Seriously, Pete is STRUGGLING`,
                         line: previousState.line + 1
                     }
             }
             this.nextToken();
         }
 
+        console.log(result)
         return result;
     }
 
@@ -80,7 +88,6 @@ export class Parser {
 
         } else if (!DIRECTORIES.has(this.current.literal)) {
             return {
-
                 prevDir: previousState.cwd,
                 cwd: previousState.cwd,
                 response: `Expected a legal dir name after cd command, got ${this.current.literal}`,
@@ -89,11 +96,18 @@ export class Parser {
             }
 
         } else if (this.current.type === TokenTypes.ARGUMENT && DIRECTORIES.has(this.current.literal)) {
-
             return {
                 prevDir: previousState.cwd,
                 cwd: `/${this.current.literal}`,
                 response: `changing directory to ${this.current.literal}`,
+                command: newInput,
+                line: previousState.line + 1
+            }
+        } else {
+            return {
+                prevDir: previousState.cwd,
+                cwd: `/`,
+                response: `I'm not sure what you did, but it was wrong`,
                 command: newInput,
                 line: previousState.line + 1
             }
@@ -143,6 +157,7 @@ ooops... this appears to be a bat
 
     parseReadCommand(previousState: CommandInput, newInput: string): CommandOutput {
         this.nextToken();
+
         if (this.current.type === TokenTypes.ARGUMENT) {
             return {
                 prevDir: previousState.cwd,
@@ -157,7 +172,7 @@ ooops... this appears to be a bat
                 prevDir: previousState.cwd,
                 cwd: previousState.cwd,
                 command: previousState.command,
-                response: 'handle read function',
+                response: `Expected argument after read command, got ${this.current.literal}`,
                 line: previousState.line + 1
             }
         }
@@ -165,14 +180,16 @@ ooops... this appears to be a bat
 
     parseArgumentCommand(previousState: CommandInput, newInput: string) {
         this.nextToken();
+
         return {
             prevDir: previousState.cwd,
             cwd: previousState.cwd,
-            response: `${newInput} is not a valid command...seek help immediately`,
+            response: `${newInput} is not a valid command...seek help immediately... just type help`,
             command: newInput,
             line: previousState.line + 1
         }
     }
+
     getHelp(previousState: CommandInput, newInput: string) {
         return {
 
@@ -183,4 +200,16 @@ ooops... this appears to be a bat
             line: previousState.line + 1
         }
     }
+
+    handleInt(previousState: CommandInput, newInput: string) {
+
+        return {
+            prevDir: previousState.cwd,
+            cwd: previousState.cwd,
+            response: `Whoa there buckeroo, I can't handle numbers, ok... I just can't do it`,
+            command: 'oops',
+            line: previousState.line + 1
+        }
+    }
+
 }

@@ -119,9 +119,11 @@ export class Lexer {
 
     readNumber(): string {
         const startPosition = this.position;
+        console.log(this.position)
         while (this.char !== null && this.isDigit(this.char)) {
             this.readChar();
         }
+        //the value of the digit at that position
         return this.input.slice(startPosition, this.position);
     }
 

@@ -14,6 +14,7 @@ interface History {
 
 const getTrimmedHistory = (history: History[]) => {
     if (history[1] && history[0].command === 'init') {
+        console.log(history.slice(1));
         return history.slice(1);
     }
     return history;
