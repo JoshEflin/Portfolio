@@ -9,7 +9,7 @@
     "lint": "next lint",
     "tsc": "tsc",
     "test": "vitest",
-    "tsx": "tsx"
+    "tsx": "tsx",
     "heroku-postbuild": "npm run build",
   },
   "dependencies": {
