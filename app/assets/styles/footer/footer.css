@@ -3,7 +3,10 @@ footer {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 30vh;
-    max-height: 30vh;
+    height: 25vh;
     overflow-y: auto;
+}
+
+footer.collapsed {
+    height: 5vh;
 }

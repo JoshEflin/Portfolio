@@ -1,9 +1,9 @@
 export const Instructions = () => {
     return (
         <article className="instructions">
-            <div> This is My Personal Website</div>
+            <div> Welcome to the Command line!</div>
             <div> You can Navigate to different pages using standard unix commands</div>
-            <div> If you are having trouble, type help</div>
+            <div> if you don&apos;t know what that means, type &quot;help&quot; or type &quot;gui&quot;</div>
         </article>
     )
 }

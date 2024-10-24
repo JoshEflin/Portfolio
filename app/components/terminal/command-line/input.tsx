@@ -16,7 +16,7 @@ export const CommandLineInput = ({ cwd, line }: CommandLineState) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const linePrompt = cwd ? prompt(`${cwd}`) : prompt('/');
-    const calculateCursorPosition = linePrompt.length + cursorPosition;
+    const calculatedCursorPosition = linePrompt.length + cursorPosition;
 
     useEffect(() => {
         setInput('');
@@ -24,8 +24,10 @@ export const CommandLineInput = ({ cwd, line }: CommandLineState) => {
     }, [line]);
 
     useEffect(() => {
+        const width = Math.max(1, input.length + 1);
+
         if (inputRef.current) {
-            inputRef.current.style.width = `${Math.max(1, input.length + 1)}ch`;
+            inputRef.current.style.width = `${width}ch`;
         }
     }, [input]);
 
@@ -50,7 +52,7 @@ export const CommandLineInput = ({ cwd, line }: CommandLineState) => {
                 style={{ minWidth: '1ch', width: 'auto' }}
                 autoFocus
             />
-            <Cursor position={calculateCursorPosition} />
+            <Cursor position={calculatedCursorPosition} />
             <button type="submit" form="command-line" />
         </label>
     );

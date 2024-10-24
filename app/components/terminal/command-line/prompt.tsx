@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 export const LinePrompt = ({ cwd }: { cwd: string }) => (
     <span className="input-domain">
         guest@josheflin.com:
@@ -18,3 +19,8 @@ export const Response = ({ response, prev }: { response: string | null, prev: st
 export const PreviousCommand = ({ command }: { command: string | null }) => (
     <span className="previous-command"> {command}</span>
 )
+
+//this might want to be in a useEffect??
+export const guiMode = (response: string | null) => response === 'initiating' ? redirect('/gui') : null;
+
+

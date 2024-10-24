@@ -1,4 +1,4 @@
-import { Response, LinePrompt, PreviousCommand } from "@/components/terminal/command-line/prompt";
+import { Response, LinePrompt, PreviousCommand, guiMode } from "@/components/terminal/command-line/prompt";
 
 interface Props {
     history: History[]
@@ -30,16 +30,25 @@ const History: React.FC<History> = ({ response, prevDir, command }) => (
 export const HistoryManager: React.FC<Props> = ({ history }) => {
     const trimmedHistory = getTrimmedHistory(history);
 
+    //I shouldnt have to do this, but in development mode getTrimmedHistory doesn't work properly
     if (trimmedHistory[0].command === 'init') {
         return null;
     } else {
-        return trimmedHistory.map(({ prevDir, command, line, response }) => (
-            <History
-                key={line}
-                response={response}
-                prevDir={prevDir}
-                command={command}
-            />
-        ))
+        return trimmedHistory.map(({ prevDir, command, line, response }) => {
+            //this is a side effect and should probably go in a useEffect
+            // refactor and test this component
+            guiMode(response)
+            return (
+
+                <History
+                    key={line}
+                    response={response}
+                    prevDir={prevDir}
+                    command={command}
+                />
+            )
+        },
+        )
     }
 }
+
