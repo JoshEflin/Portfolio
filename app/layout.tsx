@@ -23,6 +23,7 @@ export default function RootLayout({
     children: React.ReactNode;
     terminal: React.ReactNode;
 }>) {
+    console.log('layout')
     return (
         <html lang="en" className={`${roboto_mono.variable}`}>
             <body className={inter.className}>

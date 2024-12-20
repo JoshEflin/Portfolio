@@ -30,6 +30,8 @@ export class Lexer {
             return this.input[this.readPosition];
         }
     }
+    // refactor this then write tests on what you have so far. in the Lexer
+
     nextToken() {
         let token: Token;
 

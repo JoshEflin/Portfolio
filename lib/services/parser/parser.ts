@@ -1,7 +1,6 @@
 import { Token, TokenTypes } from '@/lib/services/token/token'
 import { Lexer } from '@/lib/services/lexer/lexer'
 import { CommandInput } from '@/lib/terminal/command-parser'
-import { redirect } from 'next/navigation';
 import { DIRECTORIES } from '@/constants/terminal';
 
 export interface CommandOutput extends CommandInput {
@@ -37,6 +36,9 @@ export class Parser {
             console.log('type', this.current.type);
 
             switch (this.current.type) {
+                case TokenTypes.GUI:
+                    result = this.parseGuiCommand(previousState, newInput);
+                    break;
                 case TokenTypes.CD:
                     result = this.parseCdCommand(previousState, newInput);
                     break;
@@ -95,7 +97,7 @@ export class Parser {
                 line: previousState.line + 1
             }
 
-        } else if (this.current.type === TokenTypes.ARGUMENT && DIRECTORIES.has(this.current.literal)) {
+        } else if (this.current.type === TokenTypes.ARGUMENT && DIRECTORIES.has(this.current.type)) {
             return {
                 prevDir: previousState.cwd,
                 cwd: `/${this.current.literal}`,
@@ -207,7 +209,18 @@ ooops... this appears to be a bat
             prevDir: previousState.cwd,
             cwd: previousState.cwd,
             response: `Whoa there buckeroo, I can't handle numbers, ok... I just can't do it`,
-            command: 'oops',
+            command: newInput,
+            line: previousState.line + 1
+        }
+    }
+
+    parseGuiCommand(previousState: CommandInput, newInput: string) {
+
+        return {
+            prevDir: previousState.cwd,
+            cwd: previousState.cwd,
+            response: `initiating`,
+            command: newInput,
             line: previousState.line + 1
         }
     }

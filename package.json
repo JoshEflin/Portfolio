@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.19",
-    "next": "14.2.3",
+    "next": "^14.2.16",
     "react": "^18",
     "react-dom": "^18",
     "three": "^0.164.1"
@@ -28,6 +28,7 @@
     "postcss-nested": "^6.0.1",
     "tsx": "*",
     "typescript": "^5",
-    "vitest": "*"
+    "vitest": "*",
+    "@vitejs/plugin-react": "*"
   }
 }

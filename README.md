@@ -34,9 +34,11 @@ think witcher 3 loading
 # Pages-
 
 ## engineering-
+free lance work
 
 trade tiger-- Trade tiger is being rebuilt with nextjs
 sfm
+
 nvim config
 dotfiles
 side projects
@@ -62,11 +64,17 @@ Terminal emulator
 Build the REPL
 lexer and parser completed to level of MVP
 command history and virtual file system
+implement a test suite that I can trust
 
 Build the Engineering Page ( emulate a markdown file) and Resume Page.
 
 ## 2
-add GUI-MODE command, to dynamically change the page styling, from a terminal to a gui. HTML structure should stay the same
+add GUI-MODE command, to dynamically change the page styling, from a terminal to a gui. 
+consider keeping the terminal at the bottom, but can be unminimized?
+Is that a good default?
+consider using another framework just for the lulz. 
+-- I am not sure what the two lines below mean...
+HTML structure should stay the same
 similiar to light mode dark mode, except with much more dynamic changes
 
 consider adding in the ability to users to call commands to change colors in the gui.  can access terminal with :Command sytanx like in vim

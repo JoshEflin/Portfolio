@@ -1,4 +1,5 @@
 export enum TokenTypes {
+    GUI = 'GUI',
     ILLEGAL = 'ILLEGAL',
     EOF = 'EOF',
     ARGUMENT = 'ARGUMENT',
@@ -39,7 +40,8 @@ export const lookupCommand = (command: string): TokenTypes => {
         'help': TokenTypes.HELP,
         'cat': TokenTypes.CAT,
         'echo': TokenTypes.ECHO,
-        'read': TokenTypes.READ
+        'read': TokenTypes.READ,
+        'gui': TokenTypes.GUI
     };
 
     return operations[command] || TokenTypes.ARGUMENT;
