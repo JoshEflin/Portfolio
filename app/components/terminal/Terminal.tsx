@@ -36,12 +36,15 @@ export function Terminal() {
         }
     }, [history])
     useEffect(() => {
-        const handleClick = (e:any ) => {
-            if (terminalRef.current && terminalRef.current.contains(e.target)) {
+        const handleClick = (e: MouseEvent ) => {
+            const isInsideTerminal = terminalRef.current && e.target instanceof Node && terminalRef.current.contains(e.target);
+
+            if (isInsideTerminal) {
                 inputRef?.current?.focus();
             }
         }
         document.addEventListener('click', handleClick);
+
         return () => {
             document.removeEventListener('click', handleClick);
         }
