@@ -12,6 +12,7 @@ export function Terminal() {
     const [{ command, cwd, line, response, prevDir }, formAction] = useFormState(commandParser, WELCOME);
     const [history, setHistory] = useState([{ command, cwd, line, response, prevDir }])
     const terminalRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         setHistory((previousHistory) => {
@@ -34,6 +35,17 @@ export function Terminal() {
             terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
         }
     }, [history])
+    useEffect(() => {
+        const handleClick = (e:any ) => {
+            if (terminalRef.current && terminalRef.current.contains(e.target)) {
+                inputRef?.current?.focus();
+            }
+        }
+        document.addEventListener('click', handleClick);
+        return () => {
+            document.removeEventListener('click', handleClick);
+        }
+    }, [])
 
     return (
         <div className='terminal' ref={terminalRef}>
@@ -42,7 +54,7 @@ export function Terminal() {
                 name="command-line"
                 action={formAction}
             >
-                <CommandLineInput cwd={cwd} line={line} />
+                <CommandLineInput cwd={cwd} line={line} inputRef={inputRef} />
             </form>
         </div>
     );

@@ -8,7 +8,7 @@ export interface CommandInput {
     line: number;
 }
 
-//commandLineState is the current state and formData.get('command') tells us what the next state should be
+//currentCommandLineState is the current state and formData.get('command') tells us what the next state should be
 //the state is returned to the form so that we can create command history
 export const commandParser = async (currentCommandLineState: CommandInput, formData: FormData) => {
     const { command, cwd } = currentCommandLineState;

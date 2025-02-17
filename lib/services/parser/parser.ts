@@ -97,7 +97,7 @@ export class Parser {
                 line: previousState.line + 1
             }
 
-        } else if (this.current.type === TokenTypes.ARGUMENT && DIRECTORIES.has(this.current.type)) {
+        } else if (this.current.type === TokenTypes.ARGUMENT || DIRECTORIES.has(this.current.type)) {
             return {
                 prevDir: previousState.cwd,
                 cwd: `/${this.current.literal}`,
@@ -169,7 +169,6 @@ ooops... this appears to be a bat
                 line: previousState.line + 1
             }
         } else {
-            console.log(`Expected argument after read command, got ${this.current.literal}`);
             return {
                 prevDir: previousState.cwd,
                 cwd: previousState.cwd,

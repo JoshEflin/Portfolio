@@ -8,7 +8,6 @@ export const WELCOME = {
     response: ''
 };
 
-
 //legal directories
 export const RESUME = 'resume';
 export const CONTACT = 'contact';
