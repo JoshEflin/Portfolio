@@ -24,7 +24,7 @@ export function Terminal() {
 
     useEffect(() => {
         // client side routing allows terminal state to be persistent
-        // This is maybe an improper use of nextjs... 
+        // This is maybe hacky...
         // Consider other strategies for persisting terminal state such as context
         router.push(cwd)
     }, [router, cwd])
@@ -35,8 +35,9 @@ export function Terminal() {
             terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
         }
     }, [history])
+
     useEffect(() => {
-        const handleClick = (e: MouseEvent ) => {
+        const handleClick = (e: MouseEvent) => {
             const isInsideTerminal = terminalRef.current && e.target instanceof Node && terminalRef.current.contains(e.target);
 
             if (isInsideTerminal) {
