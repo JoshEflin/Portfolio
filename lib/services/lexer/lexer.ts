@@ -1,4 +1,4 @@
-import { Token, TokenTypes, newToken, lookupCommand } from '@/lib/services/token/token';
+import { Token, TokenTypes, newToken } from '@/lib/services/token/token';
 
 export class Lexer {
     private position: number
@@ -100,7 +100,7 @@ export class Lexer {
             default:
                 if (this.isLetter(this.char)) {
                     const literal = this.readIdentifier();
-                    token = { type: lookupCommand(literal), literal };
+                    token = { type: TokenTypes.IDENT, literal };
                     return token;
                 } else if (this.isDigit(this.char)) {
                     token = { type: TokenTypes.INT, literal: this.readNumber() };

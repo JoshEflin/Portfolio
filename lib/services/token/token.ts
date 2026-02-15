@@ -2,7 +2,7 @@ export enum TokenTypes {
     GUI = 'GUI',
     ILLEGAL = 'ILLEGAL',
     EOF = 'EOF',
-    ARGUMENT = 'ARGUMENT',
+    IDENT = 'IDENT',
     INT = 'INT',
     ASSIGN = '=',
     PLUS = '+',
@@ -32,19 +32,6 @@ export enum TokenTypes {
 export interface Token {
     type: TokenTypes;
     literal: string;
-}
-export const lookupCommand = (command: string): TokenTypes => {
-    const operations: { [key: string]: TokenTypes } = {
-        'ls': TokenTypes.LS,
-        'cd': TokenTypes.CD,
-        'help': TokenTypes.HELP,
-        'cat': TokenTypes.CAT,
-        'echo': TokenTypes.ECHO,
-        'read': TokenTypes.READ,
-        'gui': TokenTypes.GUI
-    };
-
-    return operations[command] || TokenTypes.ARGUMENT;
 }
 
 export const newToken = (tokenType: TokenTypes, ch: string | null): Token => {
