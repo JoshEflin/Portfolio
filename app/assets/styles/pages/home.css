@@ -1,4 +1,17 @@
 body {
     background: var(--terminal-black);
     color: var(--terminal-type);
+
+    /* from copilot*/
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    /* main gets remaining height */
+    flex: 1 1 auto;
+    min-height: 0;
+    /* critical: allows internal scrolling */
+    overflow: auto;
+    /* scroll page content here */
 }

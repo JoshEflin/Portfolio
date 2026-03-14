@@ -5,6 +5,11 @@ import { DIRECTORIES } from '@/constants/terminal';
 
 type CommandHandler = (prev: CommandInput, input: string, args?: string[]) => CommandOutput;
 
+type ParsedCommand =
+    | { kind: 'empty' }
+    | { kind: 'command'; name: string; args: string[]; raw: string }
+    | { kind: 'error'; message: string; raw: string };
+
 export interface CommandOutput extends CommandInput {
     response: string | null;
     prevDir: string;
@@ -41,6 +46,7 @@ export class Parser {
         cd: (prev, input, args) => this.parseCdCommand(prev, input, args!),
         read: (prev, input, args) => this.parseReadCommand(prev, input, args!),
         gui: (prev, input) => this.parseGuiCommand(prev, input),
+        //play: (prev, input, args) => this.parsePlayCommand(prev, input, args[]),
         // echo: ...
         // quit: ...
     };
@@ -110,8 +116,8 @@ export class Parser {
             return this.out(prev, input, { cwd: '/', response: '' });
         }
 
-        if (!DIRECTORIES.has(target)) {
-            return this.out(prev, input, { response: `No such page: ${target}` });
+        if (!DIRECTORIES.has(target.toUpperCase())) {
+            return this.out(prev, input, { response: `No such page: ${target}.` });
         }
 
         return this.out(prev, input, {

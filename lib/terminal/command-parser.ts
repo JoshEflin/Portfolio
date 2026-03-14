@@ -6,6 +6,7 @@ export interface CommandInput {
     command: string;
     cwd: string;
     line: number;
+    selectionId?: string;
 }
 
 //currentCommandLineState is the current state and formData.get('command') tells us what the next state should be

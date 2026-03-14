@@ -1,3 +1,4 @@
+import { NODES } from '@/lib/site/nodes'
 // initial command line state
 export const prompt = (cwd: string) => `guest@josheflin.com:~${cwd}$`;
 export const WELCOME = {
@@ -8,14 +9,7 @@ export const WELCOME = {
     response: ''
 };
 
-//legal directories
-export const RESUME = 'resume';
-export const CONTACT = 'contact';
-export const OPERA = 'opera';
-export const DEV = 'dev';
+export const DIRECTORIES = new Map(
+    Object.keys(NODES).map(k => [k.toUpperCase(), k])
+);
 
-export const DIRECTORIES = new Map();
-DIRECTORIES.set(RESUME, 'resume');
-DIRECTORIES.set(CONTACT, 'contact');
-DIRECTORIES.set(OPERA, 'opera');
-DIRECTORIES.set(DEV, 'dev');

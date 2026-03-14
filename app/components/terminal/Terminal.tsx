@@ -1,5 +1,5 @@
 'use client';
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { useEffect, useState, useRef } from 'react';
 import { commandParser } from '@/lib/terminal/command-parser';
 import { CommandLineInput } from '@/components/terminal/command-line/input';
@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 
 export function Terminal() {
     const router = useRouter();
-    const [{ command, cwd, line, response, prevDir }, formAction] = useFormState(commandParser, WELCOME);
+    const [{ command, cwd, line, response, prevDir }, formAction] = useActionState(commandParser, WELCOME);
     const [history, setHistory] = useState([{ command, cwd, line, response, prevDir }])
     const terminalRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);

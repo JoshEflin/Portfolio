@@ -4,13 +4,26 @@
 # User experience- WIP
 
 When I land on the page I am greeting with a blinking terminal prompting a login
-username
-and email
+-- [Enter]. This will allow me to change the focus to the blinking terminal programatically eliminating the risk that a user must click an invisible input precisely
+to be able to use the page. this will make people leave.
 
-If I submit an email then I join the mailing list otherwise the username is stored in state
-for later
+Refactor to front end only? fetch full strings, return text below slowly
+-- Put the title screen and ascii images in the terminal component.. having the page rendered at build is not important, it doesnt cost much to render on the client
+
+
+do I want a mailing list? opt-in only. 
+    -- Get in touch page
+
+
+Start off in JMUX. terminal on the right and front end on the left
+user can opt into terminal mode or just click around. so its a live repl
+and button clicks and mouse clicks are just aliases of eachother
+
 
 When I am 'logged in' I can choose to init GUI mode which will be a bookshelf
+ First I buld the back end of the portfolio then I build the front end
+ the backend is already a front end so I stand on the shoulders of giants and echo the patterns of the past
+ but and then sprinkle on the bit of salt I'm worth forever shaping the flavour of eternity!
 
 The Command line-
 
@@ -26,7 +39,7 @@ each of those pages is its on page on the bookshelf
 The BiographicalBookShelf/ Menagerie-
 all the same pages all part of a bookshelf
 to progress through my timeline or regress,
-use vim key bindings
+use vim key bindings ( also arrow keys)
 using } takes you to the next epoch(page)
 perhaps there can be a loading screen with a wise quote and music
 think witcher 3 loading
@@ -76,6 +89,9 @@ consider using another framework just for the lulz.
 -- I am not sure what the two lines below mean...
 HTML structure should stay the same
 similiar to light mode dark mode, except with much more dynamic changes
+-- It means -- mesage to old self-- who had forgotten himself- seek a way to 
+Create dynamic change in the ui with a singular property. so that I can potentially expose an entire
+UI per THEME. Ensure that  it's built on the same underlying component architecture to simplify.
 
 consider adding in the ability to users to call commands to change colors in the gui.  can access terminal with :Command sytanx like in vim
 

@@ -1,0 +1,31 @@
+
+[
+  {
+    "id": "Tchaikovsky",
+    "title": "Lensky's Aria",
+    "youtubeId": "XJ0qMMLsi9g",
+    "role": "Lensky",
+    "work": "Eugene Onegin",
+    "date": "2019-08-02",
+    "notes": "Live recital recording."
+  },
+  {
+    "id": "Donizetti",
+    "title": "Una Furtiva Lagrima",
+    "youtubeId": "E3mSDuDV1-0",
+    "role": "Nemorino",
+    "work": "L'elisir D'amore",
+    "date": "2019-08-02",
+    "notes": "Live recital recording."
+    },
+    {
+
+    "id": "National Anthem",
+    "title": "Star Spangled Banner",
+    "youtubeId": "rKo1t7-utNc",
+    "role": "USA",
+    "work": "Star Spangled Banner",
+    "date": "2020-07-31",
+    "notes": "Live recital recording."
+    }
+]

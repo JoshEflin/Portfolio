@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -9,24 +13,43 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "disableSourceOfProjectReferenceRedirect":true,
+    "disableSourceOfProjectReferenceRedirect": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "baseUrl":  "./",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["app/*"],
-      "@/components/*": ["app/components/*"],
-      "@/styles/*": ["app/assets/styles/*"],
-      "@/lib/*":["lib/*"],
-      "@/constants/*":["constants/*"]
-    }
+      "@/*": [
+        "app/*"
+      ],
+      "@/components/*": [
+        "app/components/*"
+      ],
+      "@/styles/*": [
+        "app/assets/styles/*"
+      ],
+      "@/lib/*": [
+        "lib/*"
+      ],
+      "@/constants/*": [
+        "constants/*"
+      ]
+    },
+    "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
