@@ -1,31 +1,22 @@
-import { Token, TokenTypes } from '@/lib/services/token/token'
-import { Lexer } from '@/lib/services/lexer/lexer'
 import { CommandInput } from '@/lib/terminal/command-parser'
 import { DIRECTORIES } from '@/constants/terminal';
+import { recordings } from '@/content/recordings';
+import { NODES } from '@/lib/site/nodes'
 
 type CommandHandler = (prev: CommandInput, input: string, args?: string[]) => CommandOutput;
-
-type ParsedCommand =
-    | { kind: 'empty' }
-    | { kind: 'command'; name: string; args: string[]; raw: string }
-    | { kind: 'error'; message: string; raw: string };
+export type TerminalResponse =
+    | { type: 'text'; content: string }
+    | { type: 'video'; youtubeId: string, title?: string }
 
 export interface CommandOutput extends CommandInput {
-    response: string | null;
+    response: TerminalResponse | null;
     prevDir: string;
+    clear?: boolean;
+    open?: string;
 }
 
 export class Parser {
-    current: Token;
-    peek: Token;
-
-    constructor(public lexer: Lexer) {
-        this.current = this.lexer.nextToken();
-        this.peek = this.lexer.nextToken();
-    }
-    nextToken() {
-        this.current = this.peek;
-        this.peek = this.lexer.nextToken();
+    constructor() {
     }
     private out(prev: CommandInput, input: string, patch: Partial<CommandOutput>): CommandOutput {
         return {
@@ -46,90 +37,118 @@ export class Parser {
         cd: (prev, input, args) => this.parseCdCommand(prev, input, args!),
         read: (prev, input, args) => this.parseReadCommand(prev, input, args!),
         gui: (prev, input) => this.parseGuiCommand(prev, input),
-        //play: (prev, input, args) => this.parsePlayCommand(prev, input, args[]),
+        play: (prev, input, args) => this.parsePlayCommand(prev, input, args!),
+        clear: (prev, input) => this.parseClearCommand(prev, input),
+        resume: (prev, input) => this.parseResumeCommand(prev, input),
         // echo: ...
         // quit: ...
     };
     parseTokens(prev: CommandInput, input: string): CommandOutput {
-        if (this.current.type === TokenTypes.EOF) {
+        const trimmed = input.trim();
+
+        if (!trimmed) {
             return this.out(prev, input, { response: null });
         }
 
-        // With IDENT-lexing, first token should be IDENT
-        if (this.current.type !== TokenTypes.IDENT) {
-            return this.out(prev, input, {
-                response: `Unexpected token: ${this.current.literal}`,
-            });
-        }
+        const parts = trimmed.split(/\s+/);
 
-        const name = this.current.literal.toLowerCase();
-        const args = this.collectArgs();
+        const name = parts[0].toLowerCase();
+        const args = parts.slice(1).map(a => a.toLowerCase());
 
         const handler = this.handlersByName[name];
+
         if (!handler) {
             return this.out(prev, input, {
-                response: `Unknown command: ${name}. Type 'help'.`,
+                response: {
+                    type: 'text',
+                    content: `Unknown command: ${name}. Type 'help'.`
+                }
             });
         }
 
         return handler(prev, input, args);
     }
-    private collectArgs(): string[] {
-        const args: string[] = [];
-
-        // consume remaining tokens until EOF
-        while (this.peek.type !== TokenTypes.EOF) {
-            this.nextToken();
-
-            if (this.current.type === TokenTypes.IDENT) {
-                args.push(this.current.literal);
-            } else if (this.current.type === TokenTypes.SLASH) {
-                args.push('/');
-            } else if (this.current.type === TokenTypes.INT) {
-                // optional: treat numbers as args too
-                args.push(this.current.literal);
-            } else {
-                // For now, treat any other token as a literal arg.
-                // Alternatively: return a parse error.
-                args.push(this.current.literal);
-            }
-        }
-
-        return args;
-    }
     private parseLsCommand(prev: CommandInput, input: string): CommandOutput {
         return this.out(prev, input, {
-            response: Array.from(DIRECTORIES.keys()).join(' '),
+            response: { type: 'text', content: Array.from(DIRECTORIES.keys()).join(' ') }
         });
     }
 
     private getHelp(prev: CommandInput, input: string): CommandOutput {
         return this.out(prev, input, {
-            response: `Type 'ls' to view pages. Type 'cd <page>' to navigate. Type 'cat' for a cat photo. Type 'gui' for GUI mode.`,
+            response: { type: 'text', content: `Type 'ls' to view pages. Type 'cd <page>' to navigate. Type 'cat' for a cat photo. Type 'gui' for GUI mode.` }
         });
     }
 
     private parseCdCommand(prev: CommandInput, input: string, args: string[]): CommandOutput {
-        const target = args[0];
+        const raw = args[0];
 
-        if (!target || target === '/') {
-            return this.out(prev, input, { cwd: '/', response: '' });
+        if (!raw || raw === '/') {
+            return this.out(prev, input, { cwd: '/', response: null });
         }
 
-        if (!DIRECTORIES.has(target.toUpperCase())) {
-            return this.out(prev, input, { response: `No such page: ${target}.` });
+        //  Use DIRECTORIES (case-insensitive, canonical mapping)
+        const key = DIRECTORIES.get(raw.toUpperCase());
+
+        if (!key) {
+            return this.out(prev, input, {
+                response: { type: 'text', content: `No such page: ${raw}` }
+            });
         }
 
-        return this.out(prev, input, {
-            cwd: `/${target}`,
-            response: `changing directory to ${target}`,
-        });
-    }
+        const node = NODES[key];
 
-    parseCatCommand(previousState: CommandInput, newInput: string): CommandOutput {
+        switch (node.kind) {
+            case 'text':
+                return this.out(prev, input, {
+                    cwd: node.route,
+                    response: {
+                        type: 'text',
+                        content: `Entering ${node.title}...\n\nContent coming soon.`,
+                    },
+                });
+
+            case 'recordings': {
+
+                return this.out(prev, input, {
+                    cwd: node.route,
+                    response: {
+                        type: 'text',
+                        content: [
+                            'Entering OPERA ARCHIVE...',
+                            '\n',
+                            ...recordings.map(r => `${r.id}. ${r.title}`),
+                            '\n',
+                            'To play the video please type: "play" and then a space then the track number',
+                        ].join('\n'),
+                    },
+                });
+            }
+
+            case 'blogIndex':
+                return this.out(prev, input, {
+                    cwd: node.route,
+                    response: {
+                        type: 'text',
+                        content: 'Blog index coming soon...',
+                    },
+                });
+
+            case 'projects':
+                return this.out(prev, input, {
+                    cwd: node.route,
+                    response: {
+                        type: 'text',
+                        content: 'Projects coming soon...',
+                    },
+                });
+        }
+
+    } parseCatCommand(previousState: CommandInput, newInput: string): CommandOutput {
         if (previousState.command === 'cat') {
             return this.out(previousState, newInput, {
-                response: `
+                response: {
+                    type: 'text', content: `
      /\\_/\\  
     / o o \\ 
    (   "   ) 
@@ -137,13 +156,16 @@ export class Parser {
      \\~_~/  
 ooops... this appears to be a bat
 `.trimEnd(),
+                }
             });
         }
         return this.out(previousState, newInput, {
-            response: `
+            response: {
+                type: 'text', content: `
      /\\_/\\  
     ( o.o ) 
      > ^ < `.trimEnd(),
+            }
         });
     }
 
@@ -152,19 +174,52 @@ ooops... this appears to be a bat
 
         if (!what) {
             return this.out(prev, input, {
-                response: `Expected argument after read command (e.g. read about)`,
+                response: { type: 'text', content: `Expected argument after read command (e.g. read about)` }
             });
         }
 
         return this.out(prev, input, {
-            response: `handle read function: ${what}`,
+            response: { type: 'text', content: `handle read function: ${what}` }
         });
     }
 
     private parseGuiCommand(prev: CommandInput, input: string): CommandOutput {
         return this.out(prev, input, {
-            response: `initiating`,
+            response: { type: 'text', content: `initiating` }
             // later: patch your state with mode: 'gui'
+        });
+    }
+
+    private parsePlayCommand(prev: CommandInput, input: string, args: string[]): CommandOutput {
+        const key = prev.cwd.replace('/', '');
+
+        const node = NODES[key as keyof typeof NODES];
+
+        if (!node?.actions?.play) {
+            return this.out(prev, input, {
+                response: { type: 'text', content: `Command 'play' not available here.` }
+            });
+        }
+
+        return this.out(prev, input, {
+            cwd: prev.cwd,
+            response: node.actions.play(args),
+        });
+    }
+    private parseClearCommand(prev: CommandInput, input: string): CommandOutput {
+        return this.out(prev, input, {
+            response: null,
+            clear: true,
+            command: ''
+        });
+    }
+    private parseResumeCommand(prev: CommandInput, input: string): CommandOutput {
+        return this.out(prev, input, {
+            response: {
+                type: 'text',
+                content: 'Opening resume...'
+            },
+            open: '/resume.pdf' // 🔑 custom field
         });
     }
 }

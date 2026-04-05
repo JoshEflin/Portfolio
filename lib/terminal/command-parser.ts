@@ -1,5 +1,4 @@
 'use server'
-import { Lexer } from "@/lib/services/lexer/lexer";
 import { Parser } from "@/lib/services/parser/parser";
 
 export interface CommandInput {
@@ -15,8 +14,7 @@ export const commandParser = async (currentCommandLineState: CommandInput, formD
     const { command, cwd } = currentCommandLineState;
     console.log(command, cwd)
     const newInput = formData.get('command') as string;
-    const lexer = new Lexer(newInput);
-    const parser = new Parser(lexer);
+    const parser = new Parser();
     const newCommand = parser.parseTokens(currentCommandLineState, newInput);
 
     return newCommand;

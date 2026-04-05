@@ -3,6 +3,7 @@
 @import url('color-variables.css');
 
 @import url('./components/terminal.css');
+@import url('./components/youtubeEmbed.css');
 @import url('./pages/home.css');
 @import url('./pages/dev.css');
 @import url('./header/header.css');

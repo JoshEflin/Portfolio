@@ -6,7 +6,7 @@ export const WELCOME = {
     command: "init",
     cwd: '/',
     line: 0,
-    response: ''
+    response: null
 };
 
 export const DIRECTORIES = new Map(

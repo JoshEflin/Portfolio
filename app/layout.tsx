@@ -3,7 +3,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import "@/styles/app.css";
 import { ASCIIPortrait } from "./components/ASCII/portrait";
 import { ASCIIName } from "./components/ASCII/name";
-
+import { Instructions } from "./components/terminal/instructions";
 const roboto_mono = Roboto_Mono({
     subsets: ['latin'],
     variable: '--font-roboto-mono',
@@ -35,6 +35,7 @@ export default function RootLayout({
                         <ASCIIName />
                     </div>
                 </header>
+                <Instructions />
                 {children}
                 <footer>
                     {terminal}

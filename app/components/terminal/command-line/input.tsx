@@ -8,7 +8,7 @@ import { prompt } from '@/constants/terminal';
 interface CommandLineState {
     cwd: string;
     line: number
-    inputRef: RefObject<HTMLInputElement>;
+    inputRef: RefObject<HTMLInputElement | null>;
 }
 
 export const CommandLineInput = ({ cwd, line, inputRef }: CommandLineState) => {

@@ -1,4 +1,5 @@
-import { Response, LinePrompt, PreviousCommand, guiMode } from "@/components/terminal/command-line/prompt";
+import { Response, LinePrompt, PreviousCommand } from "@/components/terminal/command-line/prompt";
+import { TerminalResponse } from "@/lib/services/parser/parser";
 
 interface Props {
     history: History[]
@@ -9,46 +10,41 @@ interface History {
     command: string
     cwd?: string
     line?: number
-    response: string | null
+    response: TerminalResponse | null
 }
 
 const getTrimmedHistory = (history: History[]) => {
-    if (history[1] && history[0].command === 'init') {
-        console.log(history.slice(1));
+    if (history.length > 1 && history[0]?.command === 'init') {
         return history.slice(1);
     }
     return history;
 };
 
 const History: React.FC<History> = ({ response, prevDir, command }) => (
-    <div className="history" >
-        <LinePrompt cwd={prevDir} />
-        <PreviousCommand command={command} />
-        <Response response={response} prev={command} />
-    </div>);
+    <div className="history">
+        <div className="command-row">
+            <LinePrompt cwd={prevDir} />
+            <PreviousCommand command={command} />
+        </div>
 
+        <Response response={response} prev={command} />
+    </div>
+);
 export const HistoryManager: React.FC<Props> = ({ history }) => {
     const trimmedHistory = getTrimmedHistory(history);
 
-    //I shouldnt have to do this, but in development mode getTrimmedHistory doesn't work properly
-    if (trimmedHistory[0].command === 'init') {
-        return null;
-    } else {
-        return trimmedHistory.map(({ prevDir, command, line, response }) => {
-            //this is a side effect and should probably go in a useEffect
-            // refactor and test this component
-            guiMode(response)
-            return (
+    if (trimmedHistory.length === 0) return null;
 
-                <History
-                    key={line}
-                    response={response}
-                    prevDir={prevDir}
-                    command={command}
-                />
-            )
-        },
-        )
-    }
-}
+    if (trimmedHistory[0]?.command === 'init') return null;
+
+    return trimmedHistory.map(({ prevDir, command, line, response }) => (
+        <History
+            key={line}
+            response={response}
+            prevDir={prevDir}
+            command={command}
+        />
+    ));
+};
+
 

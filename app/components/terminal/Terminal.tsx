@@ -9,24 +9,34 @@ import { useRouter } from 'next/navigation';
 
 export function Terminal() {
     const router = useRouter();
-    const [{ command, cwd, line, response, prevDir }, formAction] = useActionState(commandParser, WELCOME);
+    const [{ command, cwd, line, response, prevDir, open, clear }, formAction] = useActionState(commandParser, WELCOME);
     const [history, setHistory] = useState([{ command, cwd, line, response, prevDir }])
     const terminalRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         setHistory((previousHistory) => {
-            // Prevent infinite rerender 
-            const isNewEntry = previousHistory[previousHistory.length - 1]?.line !== line;
-            return isNewEntry ? [...previousHistory, { prevDir, command, cwd, line, response }] : previousHistory;
-        });
-    }, [line, command, response, cwd, prevDir]);
+            if (clear) {
+                return [];
+            }
 
-    useEffect(() => {
+            const isNewEntry =
+                previousHistory[previousHistory.length - 1]?.line !== line;
+
+            if (!isNewEntry) return previousHistory;
+
+            if (!command && !response) return previousHistory;
+
+            return [
+                ...previousHistory,
+                { prevDir, command, cwd, line, response },
+            ];
+        });
+    }, [line, command, response, cwd, prevDir]); useEffect(() => {
         // client side routing allows terminal state to be persistent
         // This is maybe hacky...
         // Consider other strategies for persisting terminal state such as context
-        router.push(cwd)
+        router.replace(cwd)
     }, [router, cwd])
 
     useEffect(() => {
@@ -50,10 +60,18 @@ export function Terminal() {
             document.removeEventListener('click', handleClick);
         }
     }, [])
+    useEffect(() => {
+        if (open) {
+            window.open(open, '_blank');
+        }
+    }, [open]);
 
     return (
         <div className='terminal' ref={terminalRef}>
-            <HistoryManager history={history} />
+
+            <div className="history-container">
+                <HistoryManager history={history} />
+            </div>
             <form
                 name="command-line"
                 action={formAction}

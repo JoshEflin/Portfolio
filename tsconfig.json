@@ -38,6 +38,12 @@
       ],
       "@/constants/*": [
         "constants/*"
+      ],
+      "@/content/*": [
+        "content/*"
+      ],
+      "@/services/*": [
+        "services/*"
       ]
     },
     "target": "ES2017"
