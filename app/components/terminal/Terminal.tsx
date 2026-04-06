@@ -9,76 +9,75 @@ import { useRouter } from 'next/navigation';
 
 export function Terminal() {
     const router = useRouter();
-    const [{ command, cwd, line, response, prevDir, open, clear }, formAction] = useActionState(commandParser, WELCOME);
-    const [history, setHistory] = useState([{ command, cwd, line, response, prevDir }])
-    const terminalRef = useRef<HTMLDivElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
 
+    const [{ command, cwd, line, response, prevDir, open, clear }, formAction] =
+        useActionState(commandParser, WELCOME);
+
+    const [history, setHistory] = useState([
+        { command, cwd, line, response, prevDir },
+    ]);
+
+    const terminalRef = useRef<HTMLDivElement | null>(null);
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    // State and History 
     useEffect(() => {
-        setHistory((previousHistory) => {
-            if (clear) {
-                return [];
-            }
+        setHistory((prev) => {
+            if (clear) return [];
 
-            const isNewEntry =
-                previousHistory[previousHistory.length - 1]?.line !== line;
+            const isNewEntry = prev[prev.length - 1]?.line !== line;
+            if (!isNewEntry) return prev;
 
-            if (!isNewEntry) return previousHistory;
+            if (!command && !response) return prev;
 
-            if (!command && !response) return previousHistory;
-
-            return [
-                ...previousHistory,
-                { prevDir, command, cwd, line, response },
-            ];
+            return [...prev, { prevDir, command, cwd, line, response }];
         });
-    }, [line, command, response, cwd, prevDir]); useEffect(() => {
-        // client side routing allows terminal state to be persistent
-        // This is maybe hacky...
-        // Consider other strategies for persisting terminal state such as context
-        router.replace(cwd)
-    }, [router, cwd])
+    }, [line, command, response, cwd, prevDir, clear]);
 
+    // Side effects (navigation + open)
     useEffect(() => {
+        router.replace(cwd);
 
-        if (terminalRef.current) {
-            terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-        }
-    }, [history])
-
-    useEffect(() => {
-        const handleClick = (e: MouseEvent) => {
-            const isInsideTerminal = terminalRef.current && e.target instanceof Node && terminalRef.current.contains(e.target);
-
-            if (isInsideTerminal) {
-                inputRef?.current?.focus();
-            }
-        }
-        document.addEventListener('click', handleClick);
-
-        return () => {
-            document.removeEventListener('click', handleClick);
-        }
-    }, [])
-    useEffect(() => {
         if (open) {
             window.open(open, '_blank');
         }
-    }, [open]);
+    }, [cwd, open, router]);
+
+    //  3. Scroll like a terminal
+    useEffect(() => {
+        requestAnimationFrame(() => {
+            window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: 'auto',
+            });
+        });
+    }, [history]);
+
+    // (focus)
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            if (
+                terminalRef.current &&
+                e.target instanceof Node &&
+                terminalRef.current.contains(e.target)
+            ) {
+                inputRef.current?.focus();
+            }
+        };
+
+        document.addEventListener('click', handleClick);
+        return () => document.removeEventListener('click', handleClick);
+    }, []);
 
     return (
-        <div className='terminal' ref={terminalRef}>
-
+        <div className="terminal" ref={terminalRef}>
             <div className="history-container">
                 <HistoryManager history={history} />
             </div>
-            <form
-                name="command-line"
-                action={formAction}
-            >
+
+            <form name="command-line" action={formAction}>
                 <CommandLineInput cwd={cwd} line={line} inputRef={inputRef} />
             </form>
         </div>
     );
-};
-
+}

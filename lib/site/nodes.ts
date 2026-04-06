@@ -3,9 +3,9 @@ import { recordings } from '@/content/recordings'
 type NodeDefinition = {
     title: string;
     route: string;
-    kind: 'text' | 'recordings' | 'blogIndex' | 'projects';
+    kind: 'text' | 'recordings' | 'blogIndex' | 'projects' | 'link';
 
-    getContent?: () => string;
+    getContent?: () => TerminalResponse;
 
     actions?: {
         play?: (args: string[]) => TerminalResponse;
@@ -15,39 +15,93 @@ type NodeDefinition = {
 
 
 export const NODES: Record<string, NodeDefinition> = {
-    about: { title: 'About', route: '/about', kind: 'text' },
-    contact: { title: 'Contact', route: '/contact', kind: 'text' },
+    about: {
+        title: 'About',
+        route: '/about',
+        kind: 'text',
+        getContent: () => ({
+            kind: 'section',
+            title: 'About',
+            content: [
+                'Joshua Eflin',
+                '',
+                'Software engineer with a focus on systems, infrastructure, and debugging.',
+                'Former professional tenor with a background in performance and global travel.',
+                '',
+                'Current work spans:',
+                '- Full-stack development',
+                '- Site reliability / production systems',
+                '- infrastructure (AWS / Azure/ s)',
+                '- Automation and tooling',
+                '',
+                'Interested in building systems that are:',
+                '- Observable',
+                '- Composable',
+                '- Correct at the right level of abstraction',
+                '',
+                'Type "cd dev" to view projects.',
+                'Type "cd opera" to view recordings.',
+            ],
+        }),
+    },
+
+    contact: {
+        title: 'Contact',
+        route: '/contact',
+        kind: 'link',
+
+        getContent: () => ({
+            kind: 'link',
+            url: 'mailto:eflinjh@gmail.com?subject=Contact%20from%20portfolio',
+            label: 'eflinjh@gmail.com',
+        }),
+    },
     opera: {
         title: 'Opera',
         route: '/opera',
         kind: 'recordings',
 
-        getContent: () => [
-            'Entering OPERA ARCHIVE...',
-            '',
-            ...recordings.map(r => `${r.id}. ${r.title}`),
-            '',
-            'Type: play <number>',
-        ].join('\n'),
+        getContent: () => ({
+            kind: 'text',
+            content: [
+                'Entering OPERA ARCHIVE...',
+                '',
+                ...recordings.map((r, i) => `${i + 1}. ${r.title}`),
+                '',
+                'Type: play <number>',
+            ].join('\n'),
+        }),
 
         actions: {
             play: (args) => {
                 const index = Number(args[0]);
 
                 if (!Number.isInteger(index) || index < 1 || index > recordings.length) {
-                    return { type: 'text', content: `No recording '${args[0]}'.` };
+                    return {
+                        kind: 'text',
+                        content: `No recording '${args[0]}'.`,
+                    };
                 }
 
                 const rec = recordings[index - 1];
 
                 return {
-                    type: 'video',
+                    kind: 'video',
                     youtubeId: rec.youtubeId,
                     title: rec.title,
                 };
-            }
-        }
+            },
+        },
     },
-    blog: { title: 'Blog', route: '/blog', kind: 'blogIndex' },
-    dev: { title: 'Dev', route: '/dev', kind: 'projects' },
+    dev: {
+        title: 'Dev',
+        route: '/dev',
+        kind: 'projects',
+
+        getContent: () => ({
+            kind: 'link',
+            url: 'https://github.com/josheflin',
+            label: 'GitHub',
+        }),
+    },
 } as const;

@@ -15,17 +15,29 @@ export const Response = ({
     response: TerminalResponse | null;
     prev: string | null;
 }) => {
-    console.log(response, 'RESPONSE')
     if (!response) return null;
 
-    if (response.type === 'text') {
+    if (response.kind === 'text') {
         if (prev === 'cat') {
             return <pre className="response">{response.content}</pre>;
         }
         return <pre className="response">{response.content}</pre>;
     }
 
-    if (response.type === 'video') {
+    if (response.kind === 'link') {
+        return (
+            <div className="response">
+                <a
+                    href={response.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {response.label || response.url}
+                </a>
+            </div>
+        );
+    }
+    if (response.kind === 'video') {
         return (
             <div className="response">
                 <div className="embed-wrapper">
@@ -40,7 +52,16 @@ export const Response = ({
             </div>
         );
     }
-
+    if (response.kind === 'section') {
+        return (
+            <div className="response">
+                <h2>{response.title}</h2>
+                {response.content.map((line, i) => (
+                    <div key={i}>{line}</div>
+                ))}
+            </div>
+        );
+    }
     return null;
 };
 export const PreviousCommand = ({ command }: { command: string | null }) => (

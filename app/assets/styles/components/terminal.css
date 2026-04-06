@@ -3,31 +3,33 @@
     --type-color: var(--terminal-type);
     --font-family: var(--font-roboto-mono);
 
-    height: 100%;
+    display: block;
+
     background: var(--background);
     color: var(--type-color);
+
     font-size: 20px;
     font-family: var(--font-family);
 
-    display: flex;
-    flex-direction: column;
     border-top: 3px solid var(--type-color);
 
     pre {
-        display: inline;
+        display: block;
         white-space: pre-wrap;
+        margin: 0;
     }
 
     .history-container {
+        display: block;
+        min-height: 0;
+
         .command-row {
             display: inline;
         }
 
         .history {
             display: block;
-            flex: 1;
             margin-bottom: 8px;
-            overflow-y: auto;
         }
 
         .response {
@@ -49,7 +51,6 @@
     }
 
     .command-line {
-        flex-shrink: 0;
         position: relative;
 
         .input-domain {

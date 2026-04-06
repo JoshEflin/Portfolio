@@ -1,12 +1,14 @@
 import { CommandInput } from '@/lib/terminal/command-parser'
 import { DIRECTORIES } from '@/constants/terminal';
-import { recordings } from '@/content/recordings';
 import { NODES } from '@/lib/site/nodes'
 
 type CommandHandler = (prev: CommandInput, input: string, args?: string[]) => CommandOutput;
+
 export type TerminalResponse =
-    | { type: 'text'; content: string }
-    | { type: 'video'; youtubeId: string, title?: string }
+    | { kind: 'text'; content: string }
+    | { kind: 'video'; youtubeId: string, title?: string }
+    | { kind: 'link'; url: string; label?: string }
+    | { kind: 'section'; title: string; content: string[] };
 
 export interface CommandOutput extends CommandInput {
     response: TerminalResponse | null;
@@ -18,6 +20,7 @@ export interface CommandOutput extends CommandInput {
 export class Parser {
     constructor() {
     }
+
     private out(prev: CommandInput, input: string, patch: Partial<CommandOutput>): CommandOutput {
         return {
             prevDir: prev.cwd,
@@ -60,7 +63,7 @@ export class Parser {
         if (!handler) {
             return this.out(prev, input, {
                 response: {
-                    type: 'text',
+                    kind: 'text',
                     content: `Unknown command: ${name}. Type 'help'.`
                 }
             });
@@ -70,13 +73,13 @@ export class Parser {
     }
     private parseLsCommand(prev: CommandInput, input: string): CommandOutput {
         return this.out(prev, input, {
-            response: { type: 'text', content: Array.from(DIRECTORIES.keys()).join(' ') }
+            response: { kind: 'text', content: Array.from(DIRECTORIES.keys()).join(' ') }
         });
     }
 
     private getHelp(prev: CommandInput, input: string): CommandOutput {
         return this.out(prev, input, {
-            response: { type: 'text', content: `Type 'ls' to view pages. Type 'cd <page>' to navigate. Type 'cat' for a cat photo. Type 'gui' for GUI mode.` }
+            response: { kind: 'text', content: `Type 'ls' to view pages. Type 'cd <page>' to navigate. Type 'cat' for a cat photo. Type Resume to view Resume. Type clear to clear the screen ` }
         });
     }
 
@@ -87,68 +90,29 @@ export class Parser {
             return this.out(prev, input, { cwd: '/', response: null });
         }
 
-        //  Use DIRECTORIES (case-insensitive, canonical mapping)
         const key = DIRECTORIES.get(raw.toUpperCase());
 
         if (!key) {
             return this.out(prev, input, {
-                response: { type: 'text', content: `No such page: ${raw}` }
+                response: { kind: 'text', content: `No such page: ${raw}` }
             });
         }
 
         const node = NODES[key];
-
-        switch (node.kind) {
-            case 'text':
-                return this.out(prev, input, {
-                    cwd: node.route,
-                    response: {
-                        type: 'text',
-                        content: `Entering ${node.title}...\n\nContent coming soon.`,
-                    },
-                });
-
-            case 'recordings': {
-
-                return this.out(prev, input, {
-                    cwd: node.route,
-                    response: {
-                        type: 'text',
-                        content: [
-                            'Entering OPERA ARCHIVE...',
-                            '\n',
-                            ...recordings.map(r => `${r.id}. ${r.title}`),
-                            '\n',
-                            'To play the video please type: "play" and then a space then the track number',
-                        ].join('\n'),
-                    },
-                });
-            }
-
-            case 'blogIndex':
-                return this.out(prev, input, {
-                    cwd: node.route,
-                    response: {
-                        type: 'text',
-                        content: 'Blog index coming soon...',
-                    },
-                });
-
-            case 'projects':
-                return this.out(prev, input, {
-                    cwd: node.route,
-                    response: {
-                        type: 'text',
-                        content: 'Projects coming soon...',
-                    },
-                });
-        }
-
-    } parseCatCommand(previousState: CommandInput, newInput: string): CommandOutput {
+        console.log(node.getContent?.());
+        return this.out(prev, input, {
+            cwd: node.route,
+            response: node.getContent?.() ?? {
+                kind: 'text',
+                content: `Entering ${node.title}...`,
+            },
+        });
+    }
+    parseCatCommand(previousState: CommandInput, newInput: string): CommandOutput {
         if (previousState.command === 'cat') {
             return this.out(previousState, newInput, {
                 response: {
-                    type: 'text', content: `
+                    kind: 'text', content: `
      /\\_/\\  
     / o o \\ 
    (   "   ) 
@@ -161,7 +125,7 @@ ooops... this appears to be a bat
         }
         return this.out(previousState, newInput, {
             response: {
-                type: 'text', content: `
+                kind: 'text', content: `
      /\\_/\\  
     ( o.o ) 
      > ^ < `.trimEnd(),
@@ -174,18 +138,18 @@ ooops... this appears to be a bat
 
         if (!what) {
             return this.out(prev, input, {
-                response: { type: 'text', content: `Expected argument after read command (e.g. read about)` }
+                response: { kind: 'text', content: `Expected argument after read command (e.g. read about)` }
             });
         }
 
         return this.out(prev, input, {
-            response: { type: 'text', content: `handle read function: ${what}` }
+            response: { kind: 'text', content: `handle read function: ${what}` }
         });
     }
 
     private parseGuiCommand(prev: CommandInput, input: string): CommandOutput {
         return this.out(prev, input, {
-            response: { type: 'text', content: `initiating` }
+            response: { kind: 'text', content: `Under Construction` }
             // later: patch your state with mode: 'gui'
         });
     }
@@ -197,7 +161,7 @@ ooops... this appears to be a bat
 
         if (!node?.actions?.play) {
             return this.out(prev, input, {
-                response: { type: 'text', content: `Command 'play' not available here.` }
+                response: { kind: 'text', content: `Command 'play' not available here.` }
             });
         }
 
@@ -216,7 +180,7 @@ ooops... this appears to be a bat
     private parseResumeCommand(prev: CommandInput, input: string): CommandOutput {
         return this.out(prev, input, {
             response: {
-                type: 'text',
+                kind: 'text',
                 content: 'Opening resume...'
             },
             open: '/resume.pdf' // 🔑 custom field
