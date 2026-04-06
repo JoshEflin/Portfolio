@@ -66,7 +66,7 @@ export const CommandLineInput = ({ cwd, line, inputRef }: CommandLineState) => {
                 type="text"
                 value={input}
                 onChange={handleInputChange}
-                style={{ minWidth: '1ch', width: 'auto' }}
+                style={{ minWidth: '1ch', width: 'auto', paddingLeft: '1ch' }}
                 autoFocus
             />
             <Cursor position={calculatedCursorPosition} />
