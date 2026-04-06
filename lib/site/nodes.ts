@@ -31,7 +31,7 @@ export const NODES: Record<string, NodeDefinition> = {
                 'Current work spans:',
                 '- Full-stack development',
                 '- Site reliability / production systems',
-                '- infrastructure (AWS / Azure/ s)',
+                '- infrastructure (AWS / Azure)',
                 '- Automation and tooling',
                 '',
                 'Interested in building systems that are:',
