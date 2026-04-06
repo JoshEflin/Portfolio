@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 export function Terminal() {
     const router = useRouter();
 
-    const [{ command, cwd, line, response, prevDir, open, clear }, formAction] =
+    const [{ command, cwd, line, response, prevDir, clear }, formAction] =
         useActionState(commandParser, WELCOME);
 
     const [history, setHistory] = useState([
@@ -38,10 +38,7 @@ export function Terminal() {
     useEffect(() => {
         router.replace(cwd);
 
-        if (open) {
-            window.open(open, '_blank');
-        }
-    }, [cwd, open, router]);
+    }, [cwd, router]);
 
     //  3. Scroll like a terminal
     useEffect(() => {
@@ -75,7 +72,18 @@ export function Terminal() {
                 <HistoryManager history={history} />
             </div>
 
-            <form name="command-line" action={formAction}>
+            <form
+                name="command-line"
+                action={(formData: FormData) => {
+                    const raw = (formData.get('command') as string)?.toLowerCase();
+
+                    if (raw === 'resume') {
+                        window.open('/resume.pdf', '_blank');
+                    }
+
+                    formAction(formData);
+                }}
+            >
                 <CommandLineInput cwd={cwd} line={line} inputRef={inputRef} />
             </form>
         </div>

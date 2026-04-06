@@ -180,10 +180,11 @@ ooops... this appears to be a bat
     private parseResumeCommand(prev: CommandInput, input: string): CommandOutput {
         return this.out(prev, input, {
             response: {
-                kind: 'text',
-                content: 'Opening resume...'
+                kind: 'link',
+                url: '/resume.pdf',
+                label: 'Open resume, click here if it does not open automatically',
             },
-            open: '/resume.pdf' // 🔑 custom field
+            open: '/resume.pdf'
         });
     }
 }
