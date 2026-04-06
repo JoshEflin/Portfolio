@@ -14,8 +14,9 @@ export const commandParser = async (currentCommandLineState: CommandInput, formD
     const { command, cwd } = currentCommandLineState;
     console.log(command, cwd)
     const newInput = formData.get('command') as string;
+    const normalizedInput = newInput.toLowerCase();
     const parser = new Parser();
-    const newCommand = parser.parseTokens(currentCommandLineState, newInput);
+    const newCommand = parser.parseTokens(currentCommandLineState, normalizedInput);
 
     return newCommand;
 }
